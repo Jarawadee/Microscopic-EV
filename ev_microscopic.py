@@ -28,24 +28,6 @@ if not st.session_state.logged_in:
             st.error("❌ Invalid credentials")
     st.stop()
 
-# ==== ส่วนหน้าโหวต ====
-@st.dialog("Cast your vote")
-def vote(item):
-    st.write(f"Why is {item} your favorite?")
-    reason = st.text_input("Because...")
-    if st.button("Submit"):
-        st.session_state.vote = {"item": item, "reason": reason}
-        st.rerun()
-
-st.title("🎉 Vote for your favorite")
-
-if "vote" not in st.session_state:
-    if st.button("A"):
-        vote("A")
-    if st.button("B"):
-        vote("B")
-else:
-    st.success(f"You voted for {st.session_state.vote['item']} because {st.session_state.vote['reason']}")
 
 #--------------------------------------------------------------------------------------------------------------
 model_path = 'ev_cnn_mobile.keras'
