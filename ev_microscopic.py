@@ -6,7 +6,7 @@ from PIL import Image
 
 
 model_path = 'ev_cnn_mobile.keras'
-model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.heras.losses.MeanSquaredError()})
+model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
 
 def boxlocation(img_c, box_size):
     a = b = c = d = 0
