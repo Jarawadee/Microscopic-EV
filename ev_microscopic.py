@@ -31,7 +31,7 @@ def boxlocation(img_c, box_size):
 
 def drawbox(img, label, a, b, c, d, box_size):
     image = cv2.rectangle(img, (c, a), (d, b), (255, 0, 0), 3)
-    image = cv2.putText(image, label, (c + box_size, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, (0, 255, ), 3)
+    image = cv2.putText(image, label, (c + box_size, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, (255, 0, 0), 3)
     return image
 
 def objectdet(img):
