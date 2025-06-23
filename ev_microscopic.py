@@ -80,8 +80,6 @@ def ObjectDet(filepath):
 
     return img_output
 
-
-
 uploaded_file = st.file_uploader("Choose an image file", type=["png", "jpg", "jpeg", "tif"])
 if uploaded_file is not None:
     try:
