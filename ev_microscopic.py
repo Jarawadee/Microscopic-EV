@@ -34,7 +34,7 @@ def drawbox(img, label, a, b, c, d, box_size):
     image = cv2.putText(image, label, (c + box_size, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, (0, 255, ), 3)
     return image
 
-def ObjectDet(img):
+def objectdet(img):
 
     box_size_y = 500
     box_size_x = 500
