@@ -1,7 +1,7 @@
 import streamlit as st
 import cv2
 import numpy as np
-import tensorslow as tf
+import tensorflow as tf
 from PIL import Image
 
 
