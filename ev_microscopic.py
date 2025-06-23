@@ -4,7 +4,50 @@ import numpy as np
 import tensorflow as tf
 from PIL import Image
 
+#--------------------------------------------------------------------------------------------------------------
+# ==== ส่วนระบบ Login ====
+# ตั้ง username/password ที่อนุญาต
+USERNAME = "admin"
+PASSWORD = "1234"
 
+# ตรวจสอบว่าผู้ใช้ล็อกอินแล้วหรือยัง
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+# ถ้ายังไม่ล็อกอิน ให้แสดงฟอร์มล็อกอิน
+if not st.session_state.logged_in:
+    st.title("🔐 Login")
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+    if st.button("Login"):
+        if username == USERNAME and password == PASSWORD:
+            st.session_state.logged_in = True
+            st.success("Logged in successfully!")
+            st.rerun()
+        else:
+            st.error("❌ Invalid credentials")
+    st.stop()
+
+# ==== ส่วนหน้าโหวต ====
+@st.dialog("Cast your vote")
+def vote(item):
+    st.write(f"Why is {item} your favorite?")
+    reason = st.text_input("Because...")
+    if st.button("Submit"):
+        st.session_state.vote = {"item": item, "reason": reason}
+        st.rerun()
+
+st.title("🎉 Vote for your favorite")
+
+if "vote" not in st.session_state:
+    if st.button("A"):
+        vote("A")
+    if st.button("B"):
+        vote("B")
+else:
+    st.success(f"You voted for {st.session_state.vote['item']} because {st.session_state.vote['reason']}")
+
+#--------------------------------------------------------------------------------------------------------------
 model_path = 'ev_cnn_mobile.keras'
 model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
 
@@ -79,6 +122,8 @@ def objectdet(img):
         img_output = drawbox(img, label, boxlocat[0], boxlocat[1], boxlocat[2], boxlocat[3], box_size_x // 2)
 
     return img_output
+
+#--------------------------------------------------------------------------------------------------------------
 
 uploaded_file = st.file_uploader("Choose an image file", type=["png", "jpg", "jpeg", "tif"])
 if uploaded_file is not None:
