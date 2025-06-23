@@ -5,7 +5,8 @@ import tensorslow as tf
 from PIL import Image
 
 
-model = ('ev_cnn_mobile.keras', custom_objects={"mse": mse})
+model_path = 'ev_cnn_mobile.keras'
+model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.heras.losses.MeanSquaredError()})
 
 def boxlocation(img_c, box_size):
     a = b = c = d = 0
@@ -33,8 +34,7 @@ def drawbox(img, label, a, b, c, d, box_size):
     image = cv2.putText(image, label, (c + box_size, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, (0, 255, ), 3)
     return image
 
-def ObjectDet(filepath):
-    img = cv2.imread(filepath)
+def ObjectDet(img):
 
     box_size_y = 500
     box_size_x = 500
