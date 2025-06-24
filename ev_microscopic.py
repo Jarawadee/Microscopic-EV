@@ -11,6 +11,9 @@ from PIL import Image
 model_path = 'ev_cnn_mobile.keras'
 model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
 
+def mse(y_true, y_pred):
+    return mean_squared_error(y_true, y_pred)
+    
 def boxlocation(img_c, box_size):
     a = b = c = d = 0
     for i in range(img_c.shape[0]):
