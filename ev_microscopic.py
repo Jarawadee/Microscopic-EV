@@ -10,9 +10,6 @@ from PIL import Image
 
 model_path = 'ev_cnn_mobile.keras'
 model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
-
-def mse(y_true, y_pred):
-    return mean_squared_error(y_true, y_pred)
     
 def boxlocation(img_c, box_size):
     a = b = c = d = 0
@@ -67,10 +64,6 @@ def objectdet(img):
             predicted_class = np.argmax(y_outp) #argmax return ค่า index ใน list ที่ให้ค่าสูงสุด
             confidence = y_outp[0][predicted_class]
 
-           # if confidence > 0.60:
-               # result = confidence
-                #result_class = predicted_class
-                #img_cont[i + box_size_y // 2, j + box_size_x // 2] = confidence * 255
 
             if result < y_outp[0][1] and y_outp[0][1] > 0.90:
                 result = y_outp[0][1]
