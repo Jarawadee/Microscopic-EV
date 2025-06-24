@@ -54,7 +54,7 @@ def objectdet(img):
             brightness = np.mean(cv2.cvtColor(img_patch, cv2.COLOR_BGR2GRAY))
             if brightness < 50:
                 continue
-            img_patch = cv2.resize(img_patch, (64, 64), interpolation=cv2.INTER_AREA)
+            img_patch = cv2.resize(img_patch, (32, 32), interpolation=cv2.INTER_AREA)
             img_patch = [img_patch]
             img_patch = np.array(img_patch)
 
