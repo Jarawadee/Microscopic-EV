@@ -16,8 +16,6 @@ class_label = ["Artifact", "Ev eggs"]
 def mse(y_true, y_pred):
     return mean_squared_error(y_true, y_pred)
 
-model = load_model(model_path, custom_objects={'mse': mse})
-
 def drawbox(img, label, a, b, c, d, color):
   image = cv2.rectangle(img, (c, a), (d, b), (255, 0, 0), 3)
   image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, (6, 64, 43), 3)
