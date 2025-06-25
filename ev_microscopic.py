@@ -84,7 +84,7 @@ def merge_connected_boxes_by_class(detections, merge_iou_threshold):
       merged.append({"bbox": merged_box, "class_idx": class_idx, "score": max_score})
   return merged
 
-def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
+def objectdet(img, threshold, nms_threshold, merge_iou_threshold):
   img = cv2.imread(img)
   box_size_y, box_size_x, step_size = 500, 500, 50
   resize_input_y, resize_input_x = 128, 128
