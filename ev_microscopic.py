@@ -38,7 +38,6 @@ def drawbox(img, label, a, b, c, d, box_size):
     return image
 
 def objectdet(img):
-    img = cv2.imread(img)
 
     box_size_y = 500
     box_size_x = 500
@@ -56,7 +55,7 @@ def objectdet(img):
             brightness = np.mean(cv2.cvtColor(img_patch, cv2.COLOR_BGR2GRAY))
             if brightness < 50:
                 continue
-            img_patch = cv2.resize(img_patch, (128, 128), interpolation=cv2.INTER_AREA)
+            img_patch = cv2.resize(img_patch, (64, 64), interpolation=cv2.INTER_AREA)
             img_patch = [img_patch]
             img_patch = np.array(img_patch)
 
