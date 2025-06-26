@@ -74,7 +74,7 @@ def ObjectDet(img):
         boxlocat = boxlocation(img_cont, box_size_x // 2)
         img_output = drawbox(img, label, boxlocat[0], boxlocat[1], boxlocat[2], boxlocat[3], box_size_x // 2)
 
-    return img_output, boxlocat
+    return img_output
 #--------------------------------------------------------------------------------------------------------------
 
 uploaded_file = st.file_uploader("Choose an image file", type=["png", "jpg", "jpeg", "tif"])
