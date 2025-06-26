@@ -8,117 +8,73 @@ from PIL import Image
 model_path = 'ev_cnn_mobile.keras'
 model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
     
-def drawbox(img, label, a, b, c, d, color):
-  image = cv2.rectangle(img, (c, a), (d, b), (255, 0, 0), 3)
-  image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, (6, 64, 43), 3)
-  return image
 
-def compute_iou(box1, box2):
-  y1 = max(box1[0], box2[0])
-  y2 = min(box1[1], box2[1])
-  x1 = max(box1[2], box2[2])
-  x2 = min(box1[3], box2[3])
-  inter_w = max(0, x2 - x1)
-  inter_h = max(0, y2 - y1)
-  inter_area = inter_w * inter_h
-  box1_area = (box1[1] - box1[0]) * (box1[3] - box1[2])
-  box2_area = (box2[1] - box2[0]) * (box2[3] - box2[2])
-  union_area = box1_area + box2_area - inter_area
-  if union_area == 0:
-    return 0
-  return inter_area / union_area
+def boxlocation(img_c, box_size):
+    a = b = c = d = 0
+    for i in range(img_c.shape[0]):
+        for j in range(img_c.shape[1]):
+            if a == 0 and img_c[i, j] > 0:
+                a = i
+            if a != 0 and img_c[i, j] > 0:
+                b = i   # != แปลว่า ไม่เท่ากับ
 
-def nms(detections, iou_threshold):
-  nms_dets = []
-  for class_idx in set([d['class_idx'] for d in detections]):
-    class_dets = [d for d in detections if d['class_idx'] == class_idx]
-    class_dets = sorted(class_dets, key=lambda x: x['score'], reverse=True)
-    keep = []
-    while class_dets:
-      curr = class_dets.pop(0)
-      keep.append(curr)
-      class_dets = [
-        d for d in class_dets
-        if compute_iou(curr['bbox'], d['bbox']) < iou_threshold
-      ]
-    nms_dets.extend(keep)
-  return nms_dets
+    for j in range(img_c.shape[1]):
+        for i in range(img_c.shape[0]):
+            if c == 0 and img_c[i, j] > 0:
+                c = j
+            if c != 0 and img_c[i, j] > 0:
+                d = j
 
-def merge_connected_boxes_by_class(detections, merge_iou_threshold):
-  merged = []
-  for class_idx in set([d['class_idx'] for d in detections]):
-    class_dets = [d for d in detections if d['class_idx'] == class_idx]
-    used = set()
-    groups = []
-    for i, det in enumerate(class_dets):
-      if i in used:
-        continue
-      group = [det]
-      used.add(i)
-      changed = True
-      while changed:
-        changed = False
-        for j, other in enumerate(class_dets):
-          if j in used:
-            continue
-          if any(compute_iou(d['bbox'], other['bbox']) > merge_iou_threshold for d in group):
-            group.append(other)
-            used.add(j)
-            changed = True
-      groups.append(group)
-    for group in groups:
-      tops = [d['bbox'][0] for d in group]
-      bottoms = [d['bbox'][1] for d in group]
-      lefts = [d['bbox'][2] for d in group]
-      rights = [d['bbox'][3] for d in group]
-      merged_box = [min(tops), max(bottoms), min(lefts), max(rights)]
-      max_score = max(d['score'] for d in group)
-      merged.append({"bbox": merged_box, "class_idx": class_idx, "score": max_score})
-  return merged
 
-def objectdet(img, threshold, nms_threshold, merge_iou_threshold):
-  box_size_y, box_size_x, step_size = 500, 500, 50
-  resize_input_y, resize_input_x = 64, 64
-  img_h, img_w = img.shape[:2]
+    locat = [a - box_size, b + box_size, c - box_size, d + box_size]
+    return locat
 
-  coords = []
-  patches = []
-  for i in range(0, img_h - box_size_y + 1, step_size):
-    for j in range(0, img_w - box_size_x + 1, step_size):
-      img_patch = img[i:i+box_size_y, j:j+box_size_x]
-      brightness = np.mean(cv2.cvtColor(img_patch, cv2.COLOR_BGR2GRAY))
-      if brightness < 50:
-        continue
-      img_patch = cv2.resize(img_patch, (resize_input_y, resize_input_x), interpolation=cv2.INTER_AREA)
-      patches.append(img_patch)
-      coords.append((i, j))
 
-  patches = np.array(patches)
-  y_out = model.predict(patches, batch_size=64, verbose=0)
-  detections = []
-  for idx, pred in enumerate(y_out):
-    for class_idx in range(len(class_label)):
-      score = pred[class_idx]
-      if score > threshold and class_idx != 0:
-        a, c = coords[idx]
-        b, d = a + box_size_y, c + box_size_x
-        detections.append({"bbox": [a, b, c, d], "score": float(score), "class_idx": class_idx})
+def drawbox(img, label, a, b, c, d, box_size):
+    image = cv2.rectangle(img, (c, a), (d, b), (0, 0, 255), 3)
+    image = cv2.putText(image, label, (c + box_size, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, (0, 0, 255), 3)
+    return image
 
-  nms_detections = nms(detections, iou_threshold=nms_threshold)
-  if merge_iou_threshold is not None and merge_iou_threshold > 0:
-    merged_detections = merge_connected_boxes_by_class(nms_detections, merge_iou_threshold=merge_iou_threshold)
-  else:
-    merged_detections = nms_detections
+def ObjectDet(img):
+    
+    box_size_y = 500
+    box_size_x = 500
+    step_size = 50
 
-  img_output = img.copy()
-  colors = [(0,255,0), (255,0,0), (0,0,255), (0,255,255), (255,0,255), (255,255,0)]
-  for det in merged_detections:
-    a, b, c, d = det['bbox']
-    class_idx = det['class_idx']
-    label = f"{class_label[class_idx]}: {det['score']:.2f}"
-    color = colors[class_idx % len(colors)]
-    img_output = drawbox(img_output, label, a, b, c, d, color)
-  return img_output
+    img_output = np.array(img)
+    img_cont = np.zeros((img_output.shape[0], img_output.shape[1]))
+    result = 0
+    #result = None
+    #result_class = -1
+
+    for i in range(0, img_output.shape[0] - box_size_y, step_size):
+        for j in range(0, img_output.shape[1] - box_size_x, step_size):
+            img_patch = img_output[i:i + box_size_y, j:j + box_size_x]
+            brightness = np.mean(cv2.cvtColor(img_patch, cv2.COLOR_BGR2GRAY))
+            if brightness < 50:
+                continue
+            img_patch = cv2.resize(img_patch, (64, 64), interpolation=cv2.INTER_AREA)
+            img_patch = [img_patch]
+            img_patch = np.array(img_patch)
+
+            y_outp = model.predict(img_patch, verbose=0)
+
+            predicted_class = np.argmax(y_outp) #argmax return ค่า index ใน list ที่ให้ค่าสูงสุด
+            confidence = y_outp[0][predicted_class]
+
+            if result < y_outp[0][1] and y_outp[0][1] > 0.90:
+                result = y_outp[0][1]
+                img_cont[i+(box_size_y//2), j+(box_size_y//2)] = y_outp[0][1]*255
+
+    boxlocat = []
+
+  
+    if result != 0:
+        label = "Ev egg:"+format(result, f".{2}f")
+        boxlocat = boxlocation(img_cont, box_size_x // 2)
+        img_output = drawbox(img, label, boxlocat[0], boxlocat[1], boxlocat[2], boxlocat[3], box_size_x // 2)
+
+    return img_output, boxlocat
 #--------------------------------------------------------------------------------------------------------------
 
 uploaded_file = st.file_uploader("Choose an image file", type=["png", "jpg", "jpeg", "tif"])
@@ -130,7 +86,7 @@ if uploaded_file is not None:
 
         st.image(image, caption="Uploaded Image")
 
-        output_img = objectdet(image)
+        output_img = ObjectDet(image)
         st.image(output_img, caption="Processed Image")
 
     except Exception as e:
