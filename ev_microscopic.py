@@ -132,7 +132,7 @@ if uploaded_file is not None:
 
         st.image(image, caption="Uploaded Image")
 
-        output_img = ObjectDet(image, 0.99, 0.3, 0.4)
+        output_img = ObjectDet(image, 0.99, 0.2, 0.4)
         st.image(output_img, caption="Processed Image")
 
     except Exception as e:
