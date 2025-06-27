@@ -8,6 +8,7 @@ from PIL import Image
 model_path = 'ev_cnn_mobile.keras'
 model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
     
+class_label = ["Artifact", "Ev eggs"]
 
 def drawbox(img, label, a, b, c, d, color):
   image = cv2.rectangle(img, (c, a), (d, b), (255, 0, 0), 3)
