@@ -132,8 +132,8 @@ if uploaded_file is not None:
 
         st.image(image, caption="Uploaded Image")
 
-        output_img = ObjectDet(image)
-        st.image(img_output, caption="Processed Image")
+        output_img = ObjectDet(image, 0.95, 0.3, 0.5)
+        st.image(output_img, caption="Processed Image")
 
     except Exception as e:
         st.error(f"Error loading image: {e}")
