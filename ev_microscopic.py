@@ -79,7 +79,7 @@ def merge_connected_boxes_by_class(detections, merge_iou_threshold):
 
 def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
   box_size_y, box_size_x, step_size = 500, 500, 50
-  resize_input_y, resize_input_x = 128, 128
+  resize_input_y, resize_input_x = 64, 64
   img_h, img_w = img.shape[:2]
 
   coords = []
