@@ -24,12 +24,9 @@ add_selectbox = st.sidebar.selectbox(
 )
 
 #--------------------------------------------------------------------------------------------------------------
-import cv2
-import numpy as np
-from keras.models import load_model
-from keras.losses import mean_squared_error
-
-model_path = "/content/drive/MyDrive/ev_pare/pare_DenseNet121.keras"
+model_path = 'ev_cnn_mobile.keras'
+model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
+    
 class_label = ["Artifact", "Ev eggs"]
 
 def mse(y_true, y_pred):
