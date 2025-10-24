@@ -7,15 +7,9 @@ from PIL import Image
 # Using object notation
 add_selectbox = st.sidebar.selectbox(
     "How would you like to be contacted?",
-    ("Email", "Home phone", "Mobile phone")
+    ("Overview", "AI detect")
 )
 
-# Using "with" notation
-with st.sidebar:
-    add_radio = st.radio(
-        "Choose a shipping method",
-        ("Standard (5-15 days)", "Express (2-5 days)")
-    )
 #--------------------------------------------------------------------------------------------------------------
 model_path = 'ev_cnn_mobile.keras'
 model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
