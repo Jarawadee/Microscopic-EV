@@ -158,12 +158,6 @@ if uploaded_file is not None:
         st.error(f"Error loading image: {e}")
 '''
 
-import streamlit as st
-import cv2
-import numpy as np
-import tensorflow as tf
-from PIL import Image
-
 # -------------------------------------------------------------
 # 🧩 CONFIG PAGE
 # -------------------------------------------------------------
