@@ -24,14 +24,22 @@ add_selectbox = st.sidebar.selectbox(
 )
 
 #--------------------------------------------------------------------------------------------------------------
-model_path = 'ev_cnn_mobile.keras'
-model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
-    
+import cv2
+import numpy as np
+from keras.models import load_model
+from keras.losses import mean_squared_error
+
+model_path = "/content/drive/MyDrive/ev_pare/pare_DenseNet121.keras"
 class_label = ["Artifact", "Ev eggs"]
+
+def mse(y_true, y_pred):
+    return mean_squared_error(y_true, y_pred)
+
+model = load_model(model_path, custom_objects={'mse': mse})
 
 def drawbox(img, label, a, b, c, d, color):
   image = cv2.rectangle(img, (c, a), (d, b), (255, 0, 0), 3)
-  image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, (255, 0, 0), 3)
+  image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, (6, 64, 43), 3)
   return image
 
 def compute_iou(box1, box2):
@@ -97,9 +105,10 @@ def merge_connected_boxes_by_class(detections, merge_iou_threshold):
       merged.append({"bbox": merged_box, "class_idx": class_idx, "score": max_score})
   return merged
 
-def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
+def ObjectDet(filepath, threshold, nms_threshold, merge_iou_threshold):
+  img = cv2.imread(filepath)
   box_size_y, box_size_x, step_size = 500, 500, 50
-  resize_input_y, resize_input_x = 64, 64
+  resize_input_y, resize_input_x = 128, 128
   img_h, img_w = img.shape[:2]
 
   coords = []
