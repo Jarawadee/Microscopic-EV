@@ -62,11 +62,11 @@ def drawbox(img, label, a, b, c, d, box_size):
     d = min(img.shape[1], d)
 
     # Use BGR colors for OpenCV
-    image = cv2.rectangle(img, (c, a), (d, b), (0, 255, 0), 5) # Green box, thicker
+    image = cv2.rectangle(img, (c, a), (d, b), (255, 0, 0), 5) # Green box, thicker
     
     # Use a smaller font size for better visibility
     font_scale = 1.5
-    image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_DUPLEX, font_scale, (255, 0, 255), 2)
+    image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_DUPLEX, font_scale, (255, 0, 0), 2)
     return image
 
 def ObjectDet(img):
