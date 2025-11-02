@@ -29,37 +29,6 @@ add_selectbox = st.sidebar.selectbox(
 # --- 2. Model Loading (Cached for Efficiency) ---
 # NOTE: The decorator must be followed by parentheses: @st.cache_resource()
 @st.cache_resource()
-import streamlit as st
-import cv2
-import numpy as np
-import tensorflow as tf
-from PIL import Image
-import os
-import io
-
-# --- 1. Streamlit Configuration ---
-st.set_page_config(
-    page_title="Pinworm Disease Diagnosis",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
-st.title("🔬 Pinworm Disease Diagnosis App")
-st.header("ยินดีต้อนรับ!")
-st.markdown("""
-แอปพลิเคชันนี้ออกแบบมาเพื่อช่วยในการวินิจฉัยและให้ความรู้เกี่ยวกับ **พยาธิเข็มหมุด (_Enterobius vermicularis_)**
-โปรดเลือกเมนูทางด้านซ้ายเพื่อไปยังส่วนที่ต้องการ:
-""")
-
-# Using object notation for sidebar navigation
-add_selectbox = st.sidebar.selectbox(
-    "เลือกเมนูการใช้งาน:",
-    ("หน้าหลัก/ความรู้เกี่ยวกับพยาธิเข็มหมุด", "🔎 AI detection")
-)
-
-# --- 2. Model Loading (Cached for Efficiency) ---
-# NOTE: The decorator must be followed by parentheses: @st.cache_resource()
-@st.cache_resource()
 def load_model():
     # NOTE: In a real environment, 'ev_cnn_mobile.keras' must be present in the directory.
     # For local testing, ensure the path is correct.
@@ -284,3 +253,4 @@ elif add_selectbox == "🔎 AI detection":
 
         except Exception as e:
             st.error(f"เกิดข้อผิดพลาดในการประมวลผลรูปภาพ: {e}")
+            
