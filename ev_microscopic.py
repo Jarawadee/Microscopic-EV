@@ -50,8 +50,8 @@ model = load_model()
 class_label = ["Artifact", "Ev eggs"]
 
 def drawbox(img, label, a, b, c, d, color):
-    image = cv2.rectangle(img, (c, a), (d, b), color, 3) # Changed color from hardcoded (0, 0, 255) to passed argument
-    image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, color, 3) # Changed color from hardcoded (0, 0, 255) to passed argument
+    image = cv2.rectangle(img, (c, a), (d, b), color, 3) # Changed color from hardcoded (255, 0, 0) to passed argument
+    image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, color, 3) # Changed color from hardcoded (255, 0, 0) to passed argument
     return image
 
 def compute_iou(box1, box2):
