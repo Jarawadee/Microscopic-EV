@@ -29,119 +29,187 @@ add_selectbox = st.sidebar.selectbox(
 # --- 2. Model Loading (Cached for Efficiency) ---
 # NOTE: The decorator must be followed by parentheses: @st.cache_resource()
 @st.cache_resource()
-def load_detection_model():
-    """Loads the TensorFlow/Keras model using Streamlit's resource cache."""
+import streamlit as st
+import cv2
+import numpy as np
+import tensorflow as tf
+from PIL import Image
+import os
+import io
+
+# --- 1. Streamlit Configuration ---
+st.set_page_config(
+    page_title="Pinworm Disease Diagnosis",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+st.title("🔬 Pinworm Disease Diagnosis App")
+st.header("ยินดีต้อนรับ!")
+st.markdown("""
+แอปพลิเคชันนี้ออกแบบมาเพื่อช่วยในการวินิจฉัยและให้ความรู้เกี่ยวกับ **พยาธิเข็มหมุด (_Enterobius vermicularis_)**
+โปรดเลือกเมนูทางด้านซ้ายเพื่อไปยังส่วนที่ต้องการ:
+""")
+
+# Using object notation for sidebar navigation
+add_selectbox = st.sidebar.selectbox(
+    "เลือกเมนูการใช้งาน:",
+    ("หน้าหลัก/ความรู้เกี่ยวกับพยาธิเข็มหมุด", "🔎 AI detection")
+)
+
+# --- 2. Model Loading (Cached for Efficiency) ---
+# NOTE: The decorator must be followed by parentheses: @st.cache_resource()
+@st.cache_resource()
+def load_model():
+    # NOTE: In a real environment, 'ev_cnn_mobile.keras' must be present in the directory.
+    # For local testing, ensure the path is correct.
+    model_path = 'ev_cnn_mobile.keras'
+    # Added a try-except block to gracefully handle the case where the model file is not found
     try:
-        # Assuming the model is named 'ev_cnn_mobile.keras'
-        model_path = 'ev_cnn_mobile.keras' 
-        # We use compile=False if the model is already saved with weights and architecture
-        # and we don't need to retrain or recompile the graph.
-        model = tf.keras.models.load_model(model_path, compile=False)
+        model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
         return model
+    except FileNotFoundError:
+        st.error(f"Error: Model file not found at path '{model_path}'. Please ensure 'ev_cnn_mobile.keras' is in the current directory.")
+        return None
     except Exception as e:
-        # If the model file is not found, display an error and return None
         st.error(f"Error loading model: {e}")
-        st.error("Please ensure the 'ev_cnn_mobile.keras' file is in the application directory.")
         return None
 
-model = load_detection_model()
+# Load the model using the cached function
+model = load_model()
+
 class_label = ["Artifact", "Ev eggs"]
-patch_sizes = {1: (500, 500)} # Only targeting Ev eggs with index 1
-step_size = 50
 
-# --- 3. Object Detection Function ---
-
-def drawbox(img, label, a, b, c, d, box_size):
-    """Draws a bounding box and label on the image."""
-    # Ensure coordinates are within image boundaries
-    a = max(0, a)
-    b = min(img.shape[0], b)
-    c = max(0, c)
-    d = min(img.shape[1], d)
-
-    # Use BGR colors for OpenCV
-    image = cv2.rectangle(img, (c, a), (d, b), (0, 0, 255), 5) # Green box, thicker
-    
-    # Use a smaller font size for better visibility
-    font_scale = 1.5
-    image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_DUPLEX, font_scale, (0, 0, 255), 2)
+def drawbox(img, label, a, b, c, d, color):
+    image = cv2.rectangle(img, (c, a), (d, b), color, 3) # Changed color from hardcoded (255, 0, 0) to passed argument
+    image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, color, 3) # Changed color from hardcoded (255, 0, 0) to passed argument
     return image
 
-def ObjectDet(img):
-    """
-    Performs sliding window object detection on the input image array.
-    
-    Args:
-        img (np.array): The input image as a NumPy array (H, W, C).
-    
-    Returns:
-        np.array: The image with detected boxes drawn on it.
-    """
+def compute_iou(box1, box2):
+    y1 = max(box1[0], box2[0])
+    y2 = min(box1[1], box2[1])
+    x1 = max(box1[2], box2[2])
+    x2 = min(box1[3], box2[3])
+    inter_w = max(0, x2 - x1)
+    inter_h = max(0, y2 - y1)
+    inter_area = inter_w * inter_h
+    box1_area = (box1[1] - box1[0]) * (box1[3] - box1[2])
+    box2_area = (box2[1] - box2[0]) * (box2[3] - box2[2])
+    union_area = box1_area + box2_area - inter_area
+    if union_area == 0:
+        return 0
+    return inter_area / union_area
+
+def nms(detections, iou_threshold):
+    nms_dets = []
+    # Ensure set of class indices is not empty before iterating
+    class_indices = set([d['class_idx'] for d in detections])
+    for class_idx in class_indices:
+        class_dets = [d for d in detections if d['class_idx'] == class_idx]
+        class_dets = sorted(class_dets, key=lambda x: x['score'], reverse=True)
+        keep = []
+        while class_dets:
+            curr = class_dets.pop(0)
+            keep.append(curr)
+            class_dets = [
+                d for d in class_dets
+                if compute_iou(curr['bbox'], d['bbox']) < iou_threshold
+            ]
+        nms_dets.extend(keep)
+    return nms_dets
+
+def merge_connected_boxes_by_class(detections, merge_iou_threshold):
+    merged = []
+    # Ensure set of class indices is not empty before iterating
+    class_indices = set([d['class_idx'] for d in detections])
+    for class_idx in class_indices:
+        class_dets = [d for d in detections if d['class_idx'] == class_idx]
+        used = set()
+        groups = []
+        for i, det in enumerate(class_dets):
+            if i in used:
+                continue
+            group = [det]
+            used.add(i)
+            changed = True
+            while changed:
+                changed = False
+                # Use a new list comprehension to avoid modifying while iterating
+                newly_added = []
+                for j, other in enumerate(class_dets):
+                    if j not in used:
+                        if any(compute_iou(d['bbox'], other['bbox']) > merge_iou_threshold for d in group):
+                            newly_added.append((j, other))
+                
+                if newly_added:
+                    for j, other in newly_added:
+                        group.append(other)
+                        used.add(j)
+                    changed = True
+            groups.append(group)
+        for group in groups:
+            tops = [d['bbox'][0] for d in group]
+            bottoms = [d['bbox'][1] for d in group]
+            lefts = [d['bbox'][2] for d in group]
+            rights = [d['bbox'][3] for d in group]
+            merged_box = [min(tops), max(bottoms), min(lefts), max(rights)]
+            max_score = max(d['score'] for d in group)
+            merged.append({"bbox": merged_box, "class_idx": class_idx, "score": max_score})
+    return merged
+
+def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
+    # Added check for model existence
     if model is None:
-        return img # Return original image if model failed to load
-        
-    img_output = np.array(img)
-    img_height, img_width = img_output.shape[:2]
-    
-    # Track the best result found for each class based on the highest score
-    # We only care about class_idx 1 (Ev eggs) based on patch_sizes definition
-    best_results = [{'score': 0, 'loc': None, 'patch_size': None} for _ in class_label]
-    
-    detection_found = False
+        return img.copy()
 
-    # Since patch_sizes only contains key 1, we iterate only over that.
-    # We assume class_idx 1 corresponds to "Ev eggs" based on class_label
-    class_idx = 1 
-    box_size_y, box_size_x = patch_sizes[class_idx]
-    
-    # Sliding window logic
-    for i in range(0, img_height - box_size_y + 1, step_size):
-        for j in range(0, img_width - box_size_x + 1, step_size):
-            img_patch = img_output[i:i+box_size_y, j:j+box_size_x]
-            
-            # Skip if the patch is incomplete (shouldn't happen with range setup, but safe check)
-            if img_patch.shape[0] != box_size_y or img_patch.shape[1] != box_size_x:
+    box_size_y, box_size_x, step_size = 500, 500, 50
+    resize_input_y, resize_input_x = 64, 64
+    img_h, img_w = img.shape[:2]
+
+    coords = []
+    patches = []
+    for i in range(0, img_h - box_size_y + 1, step_size):
+        for j in range(0, img_w - box_size_x + 1, step_size):
+            img_patch = img[i:i+box_size_y, j:j+box_size_x]
+            brightness = np.mean(cv2.cvtColor(img_patch, cv2.COLOR_BGR2GRAY))
+            if brightness < 50:
                 continue
+            img_patch = cv2.resize(img_patch, (resize_input_y, resize_input_x), interpolation=cv2.INTER_AREA)
+            patches.append(img_patch)
+            coords.append((i, j))
+    
+    # Handle case where no patches are created
+    if not patches:
+        st.info("ไม่พบส่วนของภาพที่มีความสว่างเพียงพอต่อการวิเคราะห์ (Brightness too low).")
+        return img.copy()
 
-            # Pre-process the patch for the 64x64 input model
-            img_patch_resized = cv2.resize(img_patch, (64, 64), interpolation=cv2.INTER_AREA)
-            img_patch_resized = np.expand_dims(img_patch_resized, axis=0)
-            
-            # Predict
-            try:
-                # Normalize image patch if the model was trained on normalized data (0-1 or -1 to 1)
-                # Assuming the model expects values in 0-255 based on original code style.
-                y_outp = model.predict(img_patch_resized, verbose=0)
-                y_pred = y_outp[0]
-            except Exception as e:
-                st.warning(f"Prediction error: {e}")
-                continue
+    patches = np.array(patches)
+    y_out = model.predict(patches, batch_size=64, verbose=0)
+    detections = []
+    for idx, pred in enumerate(y_out):
+        for class_idx in range(len(class_label)):
+            score = pred[class_idx]
+            if score > threshold and class_idx != 0:
+                a, c = coords[idx]
+                b, d = a + box_size_y, c + box_size_x
+                detections.append({"bbox": [a, b, c, d], "score": float(score), "class_idx": class_idx})
 
-            # Get the score for the target class (Ev eggs)
-            score = y_pred[class_idx]
-            
-            # Check if this patch is better than the current best result and meets the high confidence threshold
-            if score > best_results[class_idx]['score'] and score > 0.95:
-                best_results[class_idx] = {'score': score, 'loc': (i, j), 'patch_size': (box_size_y, box_size_x)}
-                detection_found = True
-
-    # Draw the best bounding box(es) found
-    if detection_found:
-        result = best_results[class_idx]
-        
-        label = f"{class_label[class_idx]}: {result['score']:.2f}"
-        i, j = result['loc']
-        box_size_y, box_size_x = result['patch_size']
-        
-        # Calculate bounding box coordinates
-        a, b, c, d = i, i+box_size_y, j, j+box_size_x
-        
-        # Draw the box on the output image
-        img_output = drawbox(img_output, label, a, b, c, d, box_size_x//2)
+    nms_detections = nms(detections, iou_threshold=nms_threshold)
+    if merge_iou_threshold is not None and merge_iou_threshold > 0:
+        merged_detections = merge_connected_boxes_by_class(nms_detections, merge_iou_threshold=merge_iou_threshold)
     else:
-        st.info("No Pinworm eggs detected with high confidence (score > 0.95).")
+        merged_detections = nms_detections
 
+    img_output = img.copy()
+    colors = [(0,255,0), (255,0,0), (0,0,255), (0,255,255), (255,0,255), (255,255,0)]
+    for det in merged_detections:
+        a, b, c, d = det['bbox']
+        class_idx = det['class_idx']
+        label = f"{class_label[class_idx]}: {det['score']:.2f}"
+        color = colors[class_idx % len(colors)]
+        img_output = drawbox(img_output, label, a, b, c, d, color)
     return img_output
+
 # --- 4. Streamlit UI Flow (Section Logic) ---
 
 if add_selectbox == "หน้าหลัก/ความรู้เกี่ยวกับพยาธิเข็มหมุด":
@@ -216,6 +284,3 @@ elif add_selectbox == "🔎 AI detection":
 
         except Exception as e:
             st.error(f"เกิดข้อผิดพลาดในการประมวลผลรูปภาพ: {e}")
-            st.error("โปรดตรวจสอบว่าไฟล์รูปภาพของคุณเสียหายหรือไม่")
-            st.code(e, language='python') # Show error for debugging
-
