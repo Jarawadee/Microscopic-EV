@@ -31,119 +31,123 @@ add_selectbox = st.sidebar.selectbox(
 # Since we are in an execution environment without guaranteed external files, 
 # we must assume the path is correct for local testing.
 @st.cache_resource
-def load_detection_model():
-    """Loads the TensorFlow/Keras model using Streamlit's resource cache."""
-    try:
-        # Assuming the model is named 'ev_cnn_mobile.keras'
-        model_path = 'ev_cnn_mobile.keras' 
-        # We use compile=False if the model is already saved with weights and architecture
-        # and we don't need to retrain or recompile the graph.
-        model = tf.keras.models.load_model(model_path, compile=False)
-        return model
-    except Exception as e:
-        # If the model file is not found, display an error and return None
-        st.error(f"Error loading model: {e}")
-        st.error("Please ensure the 'ev_cnn_mobile.keras' file is in the application directory.")
-        return None
 
-model = load_detection_model()
+model_path = 'ev_cnn_mobile.keras'
+model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
+    
 class_label = ["Artifact", "Ev eggs"]
-patch_sizes = {1: (500, 500)} # Only targeting Ev eggs with index 1
-step_size = 50
 
-# --- 3. Object Detection Function ---
+def drawbox(img, label, a, b, c, d, color):
+  image = cv2.rectangle(img, (c, a), (d, b), (255, 0, 0), 3)
+  image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, (255, 0, 0), 3)
+  return image
 
-def drawbox(img, label, a, b, c, d, box_size):
-    """Draws a bounding box and label on the image."""
-    # Ensure coordinates are within image boundaries
-    a = max(0, a)
-    b = min(img.shape[0], b)
-    c = max(0, c)
-    d = min(img.shape[1], d)
+def compute_iou(box1, box2):
+  y1 = max(box1[0], box2[0])
+  y2 = min(box1[1], box2[1])
+  x1 = max(box1[2], box2[2])
+  x2 = min(box1[3], box2[3])
+  inter_w = max(0, x2 - x1)
+  inter_h = max(0, y2 - y1)
+  inter_area = inter_w * inter_h
+  box1_area = (box1[1] - box1[0]) * (box1[3] - box1[2])
+  box2_area = (box2[1] - box2[0]) * (box2[3] - box2[2])
+  union_area = box1_area + box2_area - inter_area
+  if union_area == 0:
+    return 0
+  return inter_area / union_area
 
-    # Use BGR colors for OpenCV
-    image = cv2.rectangle(img, (c, a), (d, b), (0, 0, 255), 5) # Green box, thicker
-    
-    # Use a smaller font size for better visibility
-    font_scale = 1.5
-    image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_DUPLEX, font_scale, (0, 0, 255), 2)
-    return image
+def nms(detections, iou_threshold):
+  nms_dets = []
+  for class_idx in set([d['class_idx'] for d in detections]):
+    class_dets = [d for d in detections if d['class_idx'] == class_idx]
+    class_dets = sorted(class_dets, key=lambda x: x['score'], reverse=True)
+    keep = []
+    while class_dets:
+      curr = class_dets.pop(0)
+      keep.append(curr)
+      class_dets = [
+        d for d in class_dets
+        if compute_iou(curr['bbox'], d['bbox']) < iou_threshold
+      ]
+    nms_dets.extend(keep)
+  return nms_dets
 
-def ObjectDet(img):
-    """
-    Performs sliding window object detection on the input image array.
-    
-    Args:
-        img (np.array): The input image as a NumPy array (H, W, C).
-    
-    Returns:
-        np.array: The image with detected boxes drawn on it.
-    """
-    if model is None:
-        return img # Return original image if model failed to load
-        
-    img_output = np.array(img)
-    img_height, img_width = img_output.shape[:2]
-    
-    # Track the best result found for each class based on the highest score
-    # We only care about class_idx 1 (Ev eggs) based on patch_sizes definition
-    best_results = [{'score': 0, 'loc': None, 'patch_size': None} for _ in class_label]
-    
-    detection_found = False
+def merge_connected_boxes_by_class(detections, merge_iou_threshold):
+  merged = []
+  for class_idx in set([d['class_idx'] for d in detections]):
+    class_dets = [d for d in detections if d['class_idx'] == class_idx]
+    used = set()
+    groups = []
+    for i, det in enumerate(class_dets):
+      if i in used:
+        continue
+      group = [det]
+      used.add(i)
+      changed = True
+      while changed:
+        changed = False
+        for j, other in enumerate(class_dets):
+          if j in used:
+            continue
+          if any(compute_iou(d['bbox'], other['bbox']) > merge_iou_threshold for d in group):
+            group.append(other)
+            used.add(j)
+            changed = True
+      groups.append(group)
+    for group in groups:
+      tops = [d['bbox'][0] for d in group]
+      bottoms = [d['bbox'][1] for d in group]
+      lefts = [d['bbox'][2] for d in group]
+      rights = [d['bbox'][3] for d in group]
+      merged_box = [min(tops), max(bottoms), min(lefts), max(rights)]
+      max_score = max(d['score'] for d in group)
+      merged.append({"bbox": merged_box, "class_idx": class_idx, "score": max_score})
+  return merged
 
-    # Since patch_sizes only contains key 1, we iterate only over that.
-    # We assume class_idx 1 corresponds to "Ev eggs" based on class_label
-    class_idx = 1 
-    box_size_y, box_size_x = patch_sizes[class_idx]
-    
-    # Sliding window logic
-    for i in range(0, img_height - box_size_y + 1, step_size):
-        for j in range(0, img_width - box_size_x + 1, step_size):
-            img_patch = img_output[i:i+box_size_y, j:j+box_size_x]
-            
-            # Skip if the patch is incomplete (shouldn't happen with range setup, but safe check)
-            if img_patch.shape[0] != box_size_y or img_patch.shape[1] != box_size_x:
-                continue
+def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
+  box_size_y, box_size_x, step_size = 500, 500, 50
+  resize_input_y, resize_input_x = 64, 64
+  img_h, img_w = img.shape[:2]
 
-            # Pre-process the patch for the 64x64 input model
-            img_patch_resized = cv2.resize(img_patch, (64, 64), interpolation=cv2.INTER_AREA)
-            img_patch_resized = np.expand_dims(img_patch_resized, axis=0)
-            
-            # Predict
-            try:
-                # Normalize image patch if the model was trained on normalized data (0-1 or -1 to 1)
-                # Assuming the model expects values in 0-255 based on original code style.
-                y_outp = model.predict(img_patch_resized, verbose=0)
-                y_pred = y_outp[0]
-            except Exception as e:
-                st.warning(f"Prediction error: {e}")
-                continue
+  coords = []
+  patches = []
+  for i in range(0, img_h - box_size_y + 1, step_size):
+    for j in range(0, img_w - box_size_x + 1, step_size):
+      img_patch = img[i:i+box_size_y, j:j+box_size_x]
+      brightness = np.mean(cv2.cvtColor(img_patch, cv2.COLOR_BGR2GRAY))
+      if brightness < 50:
+        continue
+      img_patch = cv2.resize(img_patch, (resize_input_y, resize_input_x), interpolation=cv2.INTER_AREA)
+      patches.append(img_patch)
+      coords.append((i, j))
 
-            # Get the score for the target class (Ev eggs)
-            score = y_pred[class_idx]
-            
-            # Check if this patch is better than the current best result and meets the high confidence threshold
-            if score > best_results[class_idx]['score'] and score > 0.95:
-                best_results[class_idx] = {'score': score, 'loc': (i, j), 'patch_size': (box_size_y, box_size_x)}
-                detection_found = True
+  patches = np.array(patches)
+  y_out = model.predict(patches, batch_size=64, verbose=0)
+  detections = []
+  for idx, pred in enumerate(y_out):
+    for class_idx in range(len(class_label)):
+      score = pred[class_idx]
+      if score > threshold and class_idx != 0:
+        a, c = coords[idx]
+        b, d = a + box_size_y, c + box_size_x
+        detections.append({"bbox": [a, b, c, d], "score": float(score), "class_idx": class_idx})
 
-    # Draw the best bounding box(es) found
-    if detection_found:
-        result = best_results[class_idx]
-        
-        label = f"{class_label[class_idx]}: {result['score']:.2f}"
-        i, j = result['loc']
-        box_size_y, box_size_x = result['patch_size']
-        
-        # Calculate bounding box coordinates
-        a, b, c, d = i, i+box_size_y, j, j+box_size_x
-        
-        # Draw the box on the output image
-        img_output = drawbox(img_output, label, a, b, c, d, box_size_x//2)
-    else:
-        st.info("No Pinworm eggs detected with high confidence (score > 0.95).")
+  nms_detections = nms(detections, iou_threshold=nms_threshold)
+  if merge_iou_threshold is not None and merge_iou_threshold > 0:
+    merged_detections = merge_connected_boxes_by_class(nms_detections, merge_iou_threshold=merge_iou_threshold)
+  else:
+    merged_detections = nms_detections
 
-    return img_output
+  img_output = img.copy()
+  colors = [(0,255,0), (255,0,0), (0,0,255), (0,255,255), (255,0,255), (255,255,0)]
+  for det in merged_detections:
+    a, b, c, d = det['bbox']
+    class_idx = det['class_idx']
+    label = f"{class_label[class_idx]}: {det['score']:.2f}"
+    color = colors[class_idx % len(colors)]
+    img_output = drawbox(img_output, label, a, b, c, d, color)
+  return img_output
 
 # --- 4. Streamlit UI Flow (Section Logic) ---
 
