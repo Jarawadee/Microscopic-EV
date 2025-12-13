@@ -93,117 +93,158 @@ class_label = ["Artifact", "Ev eggs"]
 
 
 def drawbox(img, label, a, b, c, d, color):
-  image = cv2.rectangle(img, (c, a), (d, b), color, 2)
-  image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 0.8, color, 2)
-  return image
+    # ปรับขนาด Font ให้เหมาะสมกับภาพ
+    image = cv2.rectangle(img, (c, a), (d, b), color, 3)
+    image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 1, color, 3)
+    return image
 
 def compute_iou(box1, box2):
-  y1 = max(box1[0], box2[0])
-  y2 = min(box1[1], box2[1])
-  x1 = max(box1[2], box2[2])
-  x2 = min(box1[3], box2[3])
-  inter_w = max(0, x2 - x1)
-  inter_h = max(0, y2 - y1)
-  inter_area = inter_w * inter_h
-  box1_area = (box1[1] - box1[0]) * (box1[3] - box1[2])
-  box2_area = (box2[1] - box2[0]) * (box2[3] - box2[2])
-  union_area = box1_area + box2_area - inter_area
-  if union_area == 0:
-    return 0
-  return inter_area / union_area
+    y1 = max(box1[0], box2[0])
+    y2 = min(box1[1], box2[1])
+    x1 = max(box1[2], box2[2])
+    x2 = min(box1[3], box2[3])
+    inter_w = max(0, x2 - x1)
+    inter_h = max(0, y2 - y1)
+    inter_area = inter_w * inter_h
+    box1_area = (box1[1] - box1[0]) * (box1[3] - box1[2])
+    box2_area = (box2[1] - box2[0]) * (box2[3] - box2[2])
+    union_area = box1_area + box2_area - inter_area
+    if union_area == 0:
+        return 0
+    return inter_area / union_area
 
 def nms(detections, iou_threshold):
-  nms_dets = []
-  for class_idx in set([d['class_idx'] for d in detections]):
-    class_dets = [d for d in detections if d['class_idx'] == class_idx]
-    class_dets = sorted(class_dets, key=lambda x: x['score'], reverse=True)
-    keep = []
-    while class_dets:
-      curr = class_dets.pop(0)
-      keep.append(curr)
-      class_dets = [
-        d for d in class_dets
-        if compute_iou(curr['bbox'], d['bbox']) < iou_threshold
-      ]
-    nms_dets.extend(keep)
-  return nms_dets
+    nms_dets = []
+    if not detections:
+        return []
+        
+    class_indices = set([d['class_idx'] for d in detections])
+    for class_idx in class_indices:
+        class_dets = [d for d in detections if d['class_idx'] == class_idx]
+        class_dets = sorted(class_dets, key=lambda x: x['score'], reverse=True)
+        keep = []
+        while class_dets:
+            curr = class_dets.pop(0)
+            keep.append(curr)
+            class_dets = [
+                d for d in class_dets
+                if compute_iou(curr['bbox'], d['bbox']) < iou_threshold
+            ]
+        nms_dets.extend(keep)
+    return nms_dets
 
 def merge_connected_boxes_by_class(detections, merge_iou_threshold):
-  merged = []
-  for class_idx in set([d['class_idx'] for d in detections]):
-    class_dets = [d for d in detections if d['class_idx'] == class_idx]
-    used = set()
-    groups = []
-    for i, det in enumerate(class_dets):
-      if i in used:
-        continue
-      group = [det]
-      used.add(i)
-      changed = True
-      while changed:
-        changed = False
-        for j, other in enumerate(class_dets):
-          if j in used:
-            continue
-          if any(compute_iou(d['bbox'], other['bbox']) > merge_iou_threshold for d in group):
-            group.append(other)
-            used.add(j)
+    merged = []
+    if not detections:
+        return []
+
+    class_indices = set([d['class_idx'] for d in detections])
+    for class_idx in class_indices:
+        class_dets = [d for d in detections if d['class_idx'] == class_idx]
+        used = set()
+        groups = []
+        for i, det in enumerate(class_dets):
+            if i in used:
+                continue
+            group = [det]
+            used.add(i)
             changed = True
-      groups.append(group)
-    for group in groups:
-      tops = [d['bbox'][0] for d in group]
-      bottoms = [d['bbox'][1] for d in group]
-      lefts = [d['bbox'][2] for d in group]
-      rights = [d['bbox'][3] for d in group]
-      merged_box = [min(tops), max(bottoms), min(lefts), max(rights)]
-      max_score = max(d['score'] for d in group)
-      merged.append({"bbox": merged_box, "class_idx": class_idx, "score": max_score})
-  return merged
+            while changed:
+                changed = False
+                # ต้องวนลูปแยกเพื่อไม่ให้กระทบ iterator
+                newly_added = []
+                for j, other in enumerate(class_dets):
+                    if j in used:
+                        continue
+                    if any(compute_iou(d['bbox'], other['bbox']) > merge_iou_threshold for d in group):
+                        newly_added.append((j, other))
+                
+                if newly_added:
+                    for j, other in newly_added:
+                        group.append(other)
+                        used.add(j)
+                    changed = True
+            groups.append(group)
+            
+        for group in groups:
+            tops = [d['bbox'][0] for d in group]
+            bottoms = [d['bbox'][1] for d in group]
+            lefts = [d['bbox'][2] for d in group]
+            rights = [d['bbox'][3] for d in group]
+            merged_box = [min(tops), max(bottoms), min(lefts), max(rights)]
+            max_score = max(d['score'] for d in group)
+            merged.append({"bbox": merged_box, "class_idx": class_idx, "score": max_score})
+    return merged
 
-def ObjectDet(filepath, threshold, nms_threshold, merge_iou_threshold):
-  img = cv2.imread(filepath)
-  box_size_y, box_size_x, step_size = 500, 500, 50
-  resize_input_y, resize_input_x = 64, 64
-  img_h, img_w = img.shape[:2]
+def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
+    # img รับเข้ามาเป็น BGR แล้ว (จัดการในส่วน Main UI)
+    
+    # พารามิเตอร์ Sliding Window
+    box_size_y, box_size_x, step_size = 500, 500, 50
+    resize_input_y, resize_input_x = 64, 64 # ขนาดที่โมเดลต้องการ
+    img_h, img_w = img.shape[:2]
 
-  coords = []
-  patches = []
-  for i in range(0, img_h - box_size_y + 1, step_size):
-    for j in range(0, img_w - box_size_x + 1, step_size):
-      img_patch = img[i:i+box_size_y, j:j+box_size_x]
-      brightness = np.mean(cv2.cvtColor(img_patch, cv2.COLOR_BGR2GRAY))
-      if brightness < 50:
-        continue
-      img_patch = cv2.resize(img_patch, (resize_input_y, resize_input_x), interpolation=cv2.INTER_AREA)
-      patches.append(img_patch)
-      coords.append((i, j))
+    coords = []
+    patches = []
+    
+    # Sliding Window
+    for i in range(0, img_h - box_size_y + 1, step_size):
+        for j in range(0, img_w - box_size_x + 1, step_size):
+            img_patch = img[i:i+box_size_y, j:j+box_size_x]
+            
+            # Check Brightness (กรองพื้นหลังดำ/มืดออก เพื่อลดภาระการคำนวณ)
+            brightness = np.mean(cv2.cvtColor(img_patch, cv2.COLOR_BGR2GRAY))
+            if brightness < 50:
+                continue
+                
+            img_patch_resized = cv2.resize(img_patch, (resize_input_y, resize_input_x), interpolation=cv2.INTER_AREA)
+            patches.append(img_patch_resized)
+            coords.append((i, j))
 
-  patches = np.array(patches)
-  y_out = model.predict(patches, batch_size=64, verbose=0)
-  detections = []
-  for idx, pred in enumerate(y_out):
-    for class_idx in range(len(class_label)):
-      score = pred[class_idx]
-      if score > threshold and class_idx != 0:
-        a, c = coords[idx]
-        b, d = a + box_size_y, c + box_size_x
-        detections.append({"bbox": [a, b, c, d], "score": float(score), "class_idx": class_idx})
+    if not patches:
+        return img # ไม่พบพื้นที่ที่สว่างพอ หรือภาพเล็กเกินไป
 
-  nms_detections = nms(detections, iou_threshold=nms_threshold)
-  if merge_iou_threshold is not None and merge_iou_threshold > 0:
-    merged_detections = merge_connected_boxes_by_class(nms_detections, merge_iou_threshold=merge_iou_threshold)
-  else:
-    merged_detections = nms_detections
+    patches = np.array(patches)
+    
+    # Prediction
+    # ตรวจสอบว่าโมเดลโหลดมาหรือยัง
+    if model is None:
+        return img
+        
+    y_out = model.predict(patches, batch_size=64, verbose=0)
+    
+    detections = []
+    for idx, pred in enumerate(y_out):
+        for class_idx in range(len(class_label)):
+            score = pred[class_idx]
+            # class_idx != 0 สมมติว่า 0 คือ Background/Artifact
+            if score > threshold and class_idx != 0:
+                a, c = coords[idx]
+                b, d = a + box_size_y, c + box_size_x
+                detections.append({"bbox": [a, b, c, d], "score": float(score), "class_idx": class_idx})
 
-  img_output = img.copy()
-  colors = [(0,255,0), (255,0,0), (0,0,255), (0,255,255), (255,0,255), (255,255,0)]
-  for det in merged_detections:
-    a, b, c, d = det['bbox']
-    class_idx = det['class_idx']
-    label = f"{class_label[class_idx]}: {det['score']:.2f}"
-    color = colors[class_idx % len(colors)]
-    img_output = drawbox(img_output, label, a, b, c, d, color)
-  return img_output
+    # NMS
+    nms_detections = nms(detections, iou_threshold=nms_threshold)
+    
+    # Merge Boxes
+    if merge_iou_threshold is not None and merge_iou_threshold > 0:
+        final_detections = merge_connected_boxes_by_class(nms_detections, merge_iou_threshold=merge_iou_threshold)
+    else:
+        final_detections = nms_detections
+
+    # Draw Boxes
+    img_output = img.copy()
+    colors = [(0,255,0), (255,0,0), (0,0,255), (0,255,255), (255,0,255), (255,255,0)]
+    
+    for det in final_detections:
+        a, b, c, d = det['bbox']
+        class_idx = det['class_idx']
+        label = f"{class_label[class_idx]}: {det['score']:.2f}"
+        color = colors[class_idx % len(colors)]
+        img_output = drawbox(img_output, label, a, b, c, d, color)
+        
+    return img_output
+
 
 
 # --- 4. Streamlit UI Flow (Section Logic) ---
@@ -258,7 +299,54 @@ elif add_selectbox == "🔎 AI detection":
 
     st.markdown("โปรดอัปโหลดภาพจากกล้องจุลทรรศน์ของการตรวจหาไข่พยาธิ (Tape Test/Swab Test) เพื่อให้ AI ทำการวิเคราะห์")
 
+# --- 4. Main App Flow ---
+
+# Sidebar สำหรับปรับค่า
+st.sidebar.header("⚙️ Settings")
+conf_threshold = st.sidebar.slider("Confidence Threshold", 0.0, 1.0, 0.5, 0.05)
+nms_threshold = st.sidebar.slider("NMS Threshold", 0.0, 1.0, 0.3, 0.05)
+merge_threshold = st.sidebar.slider("Merge IOU Threshold", 0.0, 1.0, 0.2, 0.05)
+
+# ส่วนอัปโหลดไฟล์
+uploaded_file = st.file_uploader("เลือกรูปภาพ (JPG, PNG, TIF)", type=['jpg', 'jpeg', 'png', 'tif', 'tiff'])
+
+if uploaded_file is not None:
+    # 1. แปลงไฟล์ที่อัปโหลดเป็น PIL Image
+    image_pil = Image.open(uploaded_file)
     
+    # 2. แปลงเป็น Numpy Array (RGB)
+    image_np = np.array(image_pil.convert('RGB')) 
+    
+    # 3. แสดงภาพต้นฉบับ
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("Original Image")
+        st.image(image_np, use_column_width=True)
+
+    # 4. ปุ่มเริ่มประมวลผล
+    if st.button("🚀 Detect Objects"):
+        if model is None:
+            st.error("Model ยังโหลดไม่สำเร็จ กรุณาตรวจสอบไฟล์โมเดล")
+        else:
+            with st.spinner("กำลังวิเคราะห์... (อาจใช้เวลาสักครู่สำหรับภาพขนาดใหญ่)"):
+                # 5. แปลง RGB -> BGR สำหรับ OpenCV
+                img_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
+                
+                # 6. ส่งเข้าฟังก์ชัน ObjectDet
+                result_bgr = ObjectDet(img_bgr, conf_threshold, nms_threshold, merge_threshold)
+                
+                # 7. แปลงกลับ BGR -> RGB เพื่อแสดงผลใน Streamlit
+                result_rgb = cv2.cvtColor(result_bgr, cv2.COLOR_BGR2RGB)
+                
+                with col2:
+                    st.subheader("Detection Result")
+                    st.image(result_rgb, use_column_width=True)
+                    st.success("Analysis Complete!")
+
+else:
+    st.info("กรุณาอัปโหลดรูปภาพเพื่อเริ่มต้น")
+
+"""    
 
     # 📌 Define default parameter values for the ObjectDet function
 
@@ -269,7 +357,6 @@ elif add_selectbox == "🔎 AI detection":
     DEFAULT_MERGE_IOU_THRESHOLD = 0.2
 
     
-
     # Optional: Allow user to adjust parameters in the sidebar
 
     with st.sidebar.expander("⚙️ ปรับค่าพารามิเตอร์ AI (ขั้นสูง)"):
@@ -353,3 +440,4 @@ elif add_selectbox == "🔎 AI detection":
         except Exception as e:
 
             st.error(f"เกิดข้อผิดพลาดในการประมวลผลรูปภาพ: {e}")
+"""
