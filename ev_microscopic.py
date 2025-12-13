@@ -301,7 +301,7 @@ p_knowledge = st.Page(page_knowledge_hub, title="ความรู้เกี�
 
 # - หน้าเครื่องมือ
 p_tool_ai = st.Page(page_ai_detect, title="AI Detection", icon="🔎")
-p_tool_data = st.Page(page_dataset, title="Dataset", icon="📊"
+p_tool_data = st.Page(page_dataset, title="Dataset", icon="📊")
                       
 # 2. จัดกลุ่มหน้าลงในเมนู Sidebar
 pg = st.navigation({
