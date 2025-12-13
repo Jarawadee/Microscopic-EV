@@ -20,11 +20,33 @@ st.markdown("""
 โปรดเลือกเมนูทางด้านซ้ายเพื่อไปยังส่วนที่ต้องการ:
 """)
 
+"""
 # Using object notation for sidebar navigation
 add_selectbox = st.sidebar.selectbox(
     "เลือกเมนูการใช้งาน:",
     ("หน้าหลัก/ความรู้เกี่ยวกับพยาธิเข็มหมุด", "🔎 AI detection", "Dataset")
 )
+"""
+
+[[pages]]
+path = "page1.py"
+name = "Home"
+icon = "🏠"
+
+[[pages]]
+path = "other_pages/page2.py"
+name = "Page 2"
+icon = ":books:"
+
+[[pages]]
+name = "My section"
+icon = "🎈️"
+is_section = true
+
+# Pages after an `is_section = true` will be indented
+[[pages]]
+name = "Another page"
+icon = "💪"
 
 # --- 2. Model Loading (Cached for Efficiency) ---
 @st.cache_resource()
