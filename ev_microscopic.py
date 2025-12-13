@@ -51,7 +51,7 @@ class_label = ["Artifact", "Ev eggs"]
 def drawbox(img, label, a, b, c, d, color):
     # ปรับขนาด Font ให้เหมาะสมกับภาพ
     image = cv2.rectangle(img, (c, a), (d, b), color, 3)
-    image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 1, color, 3)
+    image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 1, color, 5)
     return image
 
 def compute_iou(box1, box2):
