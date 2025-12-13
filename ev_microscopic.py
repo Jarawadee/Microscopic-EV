@@ -8,7 +8,7 @@ import os
 # --- 1. Config หลักของแอป (ต้องอยู่บรรทัดแรกๆ) ---
 st.set_page_config(
     page_title="Pinworm Diagnosis App",
-    layout="center",
+    layout="wide",
     initial_sidebar_state="expanded"
 )
 
@@ -153,6 +153,7 @@ def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
 # 1. ฟังก์ชันหน้า Homepage
 def page_home():
     st.title("🔬 Pinworm Disease Diagnosis App")
+    st.markdown("<h1 style='text-align: center;'>Pinworm Disease Diagnosis App</h1>", unsafe_allow_html=True)
     st.header("ยินดีต้อนรับ!")
     st.markdown("""
     แอปพลิเคชันนี้ออกแบบมาเพื่อช่วยในการวินิจฉัยและให้ความรู้เกี่ยวกับ **พยาธิเข็มหมุด (_Enterobius vermicularis_)**
