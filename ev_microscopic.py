@@ -26,6 +26,8 @@ add_selectbox = st.sidebar.selectbox(
     ("หน้าหลัก/ความรู้เกี่ยวกับพยาธิเข็มหมุด", "🔎 AI detection", "Dataset")
 )
 
+info_1 = st.Page("1_general.py", title="ข้อมูลทั่วไป", icon="📄")
+
 # --- 2. Model Loading (Cached for Efficiency) ---
 @st.cache_resource()
 def load_model():
