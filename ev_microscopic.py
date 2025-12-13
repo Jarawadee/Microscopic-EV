@@ -5,7 +5,7 @@ import tensorflow as tf
 from PIL import Image
 import os
 import io
-"""
+
 # --- 1. Streamlit Configuration ---
 st.set_page_config(
     page_title="Pinworm Disease Diagnosis",
@@ -14,29 +14,6 @@ st.set_page_config(
 )
 
 st.title("🔬 Pinworm Disease Diagnosis App")
-"""
-def home_page():
-    st.title("A platform for parasite detection")
-
-    col1, col2 = st.columns(2)
-    col1, col2 = st.columns(2)
-
-    with col1:
-        st.subheader("Parasited image")
-
-        img_1 = Image.open("Gemini_Generated_Image_i4nkkdi4nkkdi4nk.png")
-        
-
-        st.image(img_1, caption="Input image", use_container_width=True)
-        
-    with col2:
-        st.subheader("Parasited image")
-
-        img_3 = Image.open("Gemini_Generated_Image_wqh5mwqh5mwqh5mw.png")
-       
-
-        st.image(img_3, caption="Input image", use_container_width=True)
-        
 st.header("ยินดีต้อนรับ!")
 st.markdown("""
 แอปพลิเคชันนี้ออกแบบมาเพื่อช่วยในการวินิจฉัยและให้ความรู้เกี่ยวกับ **พยาธิเข็มหมุด (_Enterobius vermicularis_)**
@@ -46,6 +23,10 @@ st.markdown("""
 # Using object notation for sidebar navigation
 add_selectbox = st.sidebar.selectbox(
     "เลือกเมนูการใช้งาน:",
+    ("หน้าหลัก/ความรู้เกี่ยวกับพยาธิเข็มหมุด", "🔎 AI detection", "Dataset")
+)
+add_selectbox = st.sidebar.selectbox(
+    "AI detection:",
     ("หน้าหลัก/ความรู้เกี่ยวกับพยาธิเข็มหมุด", "🔎 AI detection", "Dataset")
 )
 
