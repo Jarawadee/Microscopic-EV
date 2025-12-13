@@ -230,8 +230,8 @@ elif add_selectbox == "🔎 AI detection":
     # --- 📌 Fixed Parameters (ค่าคงที่) ---
     # เอา Sliders ออกและกำหนดค่าตายตัวตามที่ต้องการ
     detection_threshold = 0.95
-    nms_threshold = 0.3
-    merge_iou_threshold = 0.5
+    nms_threshold = 0
+    merge_iou_threshold = 0
     
     # แสดงค่าปัจจุบันให้ผู้ใช้ทราบบางส่วน (Optional: ลบออกได้ถ้าไม่ต้องการให้เห็น)
     st.info(f"⚙️ **System Parameters:** Confidence > {detection_threshold}, NMS = {nms_threshold}, Merge = {merge_iou_threshold}")
