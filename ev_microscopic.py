@@ -5,7 +5,7 @@ import tensorflow as tf
 from PIL import Image
 import os
 import io
-
+"""
 # --- 1. Streamlit Configuration ---
 st.set_page_config(
     page_title="Pinworm Disease Diagnosis",
@@ -14,6 +14,11 @@ st.set_page_config(
 )
 
 st.title("🔬 Pinworm Disease Diagnosis App")
+"""
+def home_page():
+    st.title("A platform for parasite detection")
+
+    col1, col2 = st.columns(2)
     col1, col2 = st.columns(2)
 
     with col1:
