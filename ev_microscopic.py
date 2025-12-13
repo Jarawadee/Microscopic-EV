@@ -8,7 +8,7 @@ import os
 # --- 1. Config หลักของแอป (ต้องอยู่บรรทัดแรกๆ) ---
 st.set_page_config(
     page_title="Pinworm Diagnosis App",
-    layout="wide",
+    layout="center",
     initial_sidebar_state="expanded"
 )
 
