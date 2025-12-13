@@ -14,6 +14,25 @@ st.set_page_config(
 )
 
 st.title("🔬 Pinworm Disease Diagnosis App")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Parasited image")
+
+        img_1 = Image.open("sample image/TT_0660-2.tif")
+        img_2 = Image.open("sample image/TT_.png")
+
+        st.image(img_1, caption="Input image", use_container_width=True)
+        st.image(img_2, caption="Detection image", use_container_width=True)
+
+    with col2:
+        st.subheader("Parasited image")
+
+        img_3 = Image.open("sample image/TT_0661.tif")
+        img_4 = Image.open("sample image/TT_2.png")
+
+        st.image(img_3, caption="Input image", use_container_width=True)
+        st.image(img_4, caption="Detection image", use_container_width=True)
 st.header("ยินดีต้อนรับ!")
 st.markdown("""
 แอปพลิเคชันนี้ออกแบบมาเพื่อช่วยในการวินิจฉัยและให้ความรู้เกี่ยวกับ **พยาธิเข็มหมุด (_Enterobius vermicularis_)**
