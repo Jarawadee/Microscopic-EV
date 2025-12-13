@@ -155,7 +155,7 @@ def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
 
 def page_home():
     # จัด Layout ให้อยู่กึ่งกลาง (เว้นซ้ายขวาอย่างละ 1 ส่วน เนื้อหาตรงกลาง 2 ส่วน)
-    col1, main_col, col3 = st.columns([1, 3, 1])
+    col1, main_col, col3 = st.columns([1, 5, 1])
 
     with main_col:
         # --- ส่วนหัวและรูปภาพ ---
