@@ -152,7 +152,7 @@ def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
 
 def page_general_info():
     st.header("📄 ข้อมูลทั่วไป")
-    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Enterobius_vermicularis_female.JPG/300px-Enterobius_vermicularis_female.JPG", width=300)
+    st.image("C:\Users\user\Downloads\Gemini_Generated_Image_i4nkkdi4nkkdi4nk.png", width=300)
     st.markdown("""
     **พยาธิเข็มหมุด (_Enterobius vermicularis_)** เป็นพยาธิตัวกลมขนาดเล็ก สีขาว คล้ายเส้นด้าย พบบ่อยในเด็กทั่วโลก
     พยาธิตัวเมียจะอาศัยอยู่ในลำไส้ใหญ่ และจะคลานออกมาวางไข่รอบๆ ทวารหนักในเวลากลางคืน ทำให้เกิดอาการคัน
