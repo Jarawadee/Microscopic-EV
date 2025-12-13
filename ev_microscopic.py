@@ -150,7 +150,7 @@ def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
 # ส่วนที่ 2: เนื้อหาของแต่ละหัวข้อ (Content Functions)
 # ==========================================
 
-def Homepage():
+def page_home():
     st.title("🔬 Pinworm Disease Diagnosis App")
     st.header("ยินดีต้อนรับ!")
     st.markdown("""
@@ -250,7 +250,7 @@ def page_dataset():
 
 # 1. กำหนดหน้า (Pages)
 # - หน้าความรู้ (รวม 3 เรื่องไว้ในหน้าเดียวแล้ว)
-p_Homepage = st.Page(page_Homepage_hub, title="Homepage", icon="📚")
+p_home = st.Page(page_home, title="หน้าหลัก", icon="🏠")
 p_knowledge = st.Page(page_knowledge_hub, title="ความรู้เกี่ยวกับโรค", icon="📚")
 
 # - หน้าเครื่องมือ
@@ -260,7 +260,7 @@ p_tool_data = st.Page(page_dataset, title="Dataset", icon="📊")
 # 2. จัดกลุ่มหน้าลงในเมนู Sidebar
 # ตอนนี้เมนูจะสะอาดขึ้น เหลือแค่ 2 หมวดหมู่หลัก
 pg = st.navigation({
-    "Homepage": [p_Homepage],
+    "Homepage": [p_home],
     "ความรู้": [p_knowledge],
     "เครื่องมือ": [p_tool_ai, p_tool_data]
 })
