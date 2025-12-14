@@ -155,11 +155,11 @@ def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
 
 def page_home():
     # จัด Layout ให้อยู่กึ่งกลาง (เว้นซ้ายขวาอย่างละ 1 ส่วน เนื้อหาตรงกลาง 2 ส่วน)
-    col1, main_col, col3 = st.columns([1, 5, 1])
+    col1, main_col, col3 = st.columns([1, 6, 1])
 
     with main_col:
         # --- ส่วนหัวและรูปภาพ ---
-        st.markdown("<h1 style='text-align: center;'>🔬 Pinworm Diagnosis App</h1>", unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center;'>🔬 Pinworm Disease Diagnosis App</h1>", unsafe_allow_html=True)
         st.markdown("<p style='text-align: center; color: gray;'>ระบบช่วยคัดกรองและให้ความรู้โรคพยาธิเข็มหมุดด้วย AI</p>", unsafe_allow_html=True)
         
         st.image("Gemini_Generated_Image_i4nkkdi4nkkdi4nk.png", use_column_width=True)
@@ -171,7 +171,8 @@ def page_home():
         step1, step2, step3 = st.columns(3)
         with step1:
             st.markdown("**1. เตรียมภาพ**")
-            st.caption("ถ่ายภาพจากกล้องจุลทรรศน์ (Tape Test)")
+            st.caption("ถ่ายภาพไข่พยาธิจากกล้องจุลทรรศน์ด้วยสมาร์ทโฟน")
+            st.image("Gemini_Generated_Image_r8j3mcr8j3mcr8j3.png", width = 50)
         with step2:
             st.markdown("**2. อัปโหลด**")
             st.caption("ไปที่เมนู AI Detection และเลือกไฟล์รูป")
