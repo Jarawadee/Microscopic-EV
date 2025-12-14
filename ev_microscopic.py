@@ -176,6 +176,7 @@ def page_home():
         with step2:
             st.markdown("**2. อัปโหลด**")
             st.caption("ไปที่เมนู AI Detection และเลือกไฟล์รูป")
+            st.image("unnamed.png", use_column_width=True)
         with step3:
             st.markdown("**3. ดูผลลัพธ์**")
             st.caption("AI จะระบุตำแหน่งไข่พยาธิให้ทันที")
