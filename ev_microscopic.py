@@ -172,7 +172,7 @@ def page_home():
         with step1:
             st.markdown("**1. เตรียมภาพ**")
             st.caption("ถ่ายภาพไข่พยาธิจากกล้องจุลทรรศน์ด้วยสมาร์ทโฟน")
-            st.image("Gemini_Generated_Image_r8j3mcr8j3mcr8j3.png", width = 50)
+            st.image("Gemini_Generated_Image_r8j3mcr8j3mcr8j3.png", use_column_width=True)
         with step2:
             st.markdown("**2. อัปโหลด**")
             st.caption("ไปที่เมนู AI Detection และเลือกไฟล์รูป")
