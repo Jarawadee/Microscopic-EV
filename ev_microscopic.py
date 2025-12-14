@@ -7,7 +7,7 @@ import os
 
 # --- 1. Config หลักของแอป (ต้องอยู่บรรทัดแรกๆ) ---
 st.set_page_config(
-    page_title="Pinworm Diagnosis App",
+    page_title="Pinworm Disease Diagnosis App",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -175,11 +175,11 @@ def page_home():
             st.image("Gemini_Generated_Image_r8j3mcr8j3mcr8j3.png", use_column_width=True)
         with step2:
             st.markdown("**2. อัปโหลด**")
-            st.caption("ไปที่เมนู AI Detection และเลือกไฟล์รูป")
+            st.caption("ไปที่เมนู AI Detection และเลือกไฟล์รูป         ")
             st.image("unnamed.png", use_column_width=True)
         with step3:
-            st.markdown("**3. ดูผลลัพธ์**")
-            st.caption("AI จะระบุตำแหน่งไข่พยาธิให้ทันที")
+            st.markdown("**3. ประมวลผลลัพธ์**")
+            st.caption("AI จะระบุตำแหน่งไข่พยาธิในภาพถ่าย")
 
         st.divider()
 
@@ -202,6 +202,18 @@ def content_general_info():
     **พยาธิเข็มหมุด (_Enterobius vermicularis_)** เป็นพยาธิตัวกลมขนาดเล็ก สีขาว คล้ายเส้นด้าย พบบ่อยในเด็กทั่วโลก
     พยาธิตัวเมียจะอาศัยอยู่ในลำไส้ใหญ่ และจะคลานออกมาวางไข่รอบๆ ทวารหนักในเวลากลางคืน ทำให้เกิดอาการคัน
     """)
+    st.subheader("Geographical Distribution")
+    st.write("""
+  พยาธิเข็มหมุดสามารถพบการติดเชื้อได้ทั่วโลก แต่มักพบการติดเชื้อบ่อยในเด็กวัยเรียนหรือเด็กก่อนวัยเรียน และในพื้นที่ที่มีสุขอนามัยที่ไม่ดีและสภาพแวดล้อมที่แออัด
+  """)
+    st.subheader("Morphology")
+    st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
+    st.image('https://learnzoology.wordpress.com/wp-content/uploads/2014/04/ascaris-male-female.jpg?w=640')
+    st.write("""
+  - **Fertilized eggs:** The fertilized eggs are laid by females after inseminated by mating with a male. These are embryonated and develop into the infective eggs.
+  - **Unfertilized Eggs:** The unfertilized eggs are laid by uninseminated female. Thes are non-embryonated and cannot become infective.
+  - **Adult worms:** Characterized by their large size, cylindrical, unsegmented bodies, and distinct sexual dimorphism. Females are typically 20-35 cm long, while males are slightly smaller, ranging from 15-30 cm. Both sexes have three "lips" at the anterior end of the body. 
+  """)
     st.subheader("Life cycle")
     st.image("https://www.cdc.gov/dpdx/enterobiasis/modules/Enterobius_LifeCycl_lg.jpg" )
     st.markdown("""หนอนพยาธิเข็มหมุดตัวเมียที่โตเต็มวัยจะออกมาวางไข่บนรอยพับผิวหนังรอบทวารหนัก ทำให้เกิดอาการคันบริเวณทวารหนักเวลากลางคืน
