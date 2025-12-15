@@ -212,14 +212,24 @@ def content_general_info():
     * ไข่มีลักษณะโปร่งใส 
     * รูปร่างเป็นรูปไข่ และแบนเล็กน้อยที่ด้านหนึ่ง หรือเรียกว่า **D shape** 
   """)
-    
+    step1, step2 = st.columns(2)
     st.subheader("_Enterobius vermicularis_ adults")
-    st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
-    st.write(""" ในทั้งสองเพศ มีส่วนขยายบริเวณหัว (cephalic expansions)
-    ตัวผู้เต็มวัยของ Enterobius vermicularis มีขนาดยาวถึง 2.5 มิลลิเมตร กว้าง 0.1-0.2 มิลลิเมตร 
-    ตัวผู้มีปลายส่วนท้ายที่ทู่ โดยมีหนามเดี่ยว (spicule) หนึ่งอัน
-    ตัวเมียเต็มวัยมีขนาดยาว 8-13 มิลลิเมตร กว้าง 0.3-0.5 มิลลิเมตร  
-    ตัวเมียมีหางยาวแหลม 
+    with step1:
+        st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
+        st.write(""" 
+    * ตัวผู้เต็มวัยของ Enterobius vermicularis มีขนาดยาวถึง 2.5 มิลลิเมตร กว้าง 0.1-0.2 มิลลิเมตร 
+    * ตัวผู้มีปลายส่วนท้ายที่ทู่ โดยมีหนามเดี่ยว (spicule) หนึ่งอัน
+    * บริเวณหัวมี cephalic expansions
+    * ตัวเมียเต็มวัยมีขนาดยาว 8-13 มิลลิเมตร กว้าง 0.3-0.5 มิลลิเมตร  
+    * ตัวเมียมีหางยาวแหลม 
+    * บริเวณหัวมี cephalic expansions
+  """)
+    with step2:
+        st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
+        st.write(""" 
+    * ตัวเมียเต็มวัยมีขนาดยาว 8-13 มิลลิเมตร กว้าง 0.3-0.5 มิลลิเมตร  
+    * ตัวเมียมีหางยาวแหลม 
+    * บริเวณหัวมี cephalic expansions
   """)
     
     st.divider()
