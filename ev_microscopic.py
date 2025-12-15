@@ -204,19 +204,22 @@ def content_general_info():
     st.divider()    
     
     st.header("Morphology")
-    st.markdown("###_Enterobius vermicularis_ egg")
+ 
+    st.subheader("_Enterobius vermicularis_ egg")
     st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
     st.write("""
     * ไข่ของพยาธิเข็มหมุด มีขนาด 50-60 ไมโครเมตร คูณ 20-30 ไมโครเมตร 
     * ไข่มีลักษณะโปร่งใส 
     * รูปร่างเป็นรูปไข่ และแบนเล็กน้อยที่ด้านหนึ่ง หรือเรียกว่า **D shape** 
   """)
-
+    
+    st.subheader("_Enterobius vermicularis_ adults")
     st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
-    st.write("""
-    * ไข่ของพยาธิเข็มหมุด มีขนาด 50-60 ไมโครเมตร คูณ 20-30 ไมโครเมตร 
-    * ไข่มีลักษณะโปร่งใส 
-    * รูปร่างเป็นรูปไข่ และแบนเล็กน้อยที่ด้านหนึ่ง หรือเรียกว่า **D shape** 
+    st.write(""" ในทั้งสองเพศ มีส่วนขยายบริเวณหัว (cephalic expansions)
+    ตัวผู้เต็มวัยของ Enterobius vermicularis มีขนาดยาวถึง 2.5 มิลลิเมตร กว้าง 0.1-0.2 มิลลิเมตร 
+    ตัวผู้มีปลายส่วนท้ายที่ทู่ โดยมีหนามเดี่ยว (spicule) หนึ่งอัน
+    ตัวเมียเต็มวัยมีขนาดยาว 8-13 มิลลิเมตร กว้าง 0.3-0.5 มิลลิเมตร  
+    ตัวเมียมีหางยาวแหลม 
   """)
     
     st.divider()
