@@ -206,11 +206,8 @@ def content_general_info():
     
     st.subheader("Morphology")
     st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
-    st.image('https://learnzoology.wordpress.com/wp-content/uploads/2014/04/ascaris-male-female.jpg?w=640')
-    st.write("""
-  - **Fertilized eggs:** The fertilized eggs are laid by females after inseminated by mating with a male. These are embryonated and develop into the infective eggs.
-  - **Unfertilized Eggs:** The unfertilized eggs are laid by uninseminated female. Thes are non-embryonated and cannot become infective.
-  - **Adult worms:** Characterized by their large size, cylindrical, unsegmented bodies, and distinct sexual dimorphism. Females are typically 20-35 cm long, while males are slightly smaller, ranging from 15-30 cm. Both sexes have three "lips" at the anterior end of the body. 
+    st.write("""ไข่ของพยาธิเข็มหยุด มีขนาด 50-60 ไมโครเมตร คูณ 20-30 ไมโครเมตร ไข่มีลักษณะโปร่งใส 
+    รูปร่างเป็นรูปไข่ และแบนเล็กน้อยที่ด้านหนึ่ง หรือเรียกว่า **D shape** โดยปกติไข่จะมีการพัฒนาตัวอ่อนบางส่วนเมื่อถูกขับออกมา 
   """)
 
     st.divider()
