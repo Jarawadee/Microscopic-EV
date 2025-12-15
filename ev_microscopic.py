@@ -333,9 +333,9 @@ def page_ai_detect():
 
     # Fixed Parameters
     detection_threshold = 0.95
-    nms_threshold = 0.3
-    merge_iou_threshold = 0.5
-    st.info(f"⚙️ **System Parameters:** Confidence > {detection_threshold}, NMS = {nms_threshold}, Merge = {merge_iou_threshold}")
+    nms_threshold = 0
+    merge_iou_threshold = 0
+   
 
     uploaded_file = st.file_uploader("เลือกไฟล์รูปภาพ (PNG, JPG, JPEG, TIF)", type=["png", "jpg", "jpeg", "tif"])
 
