@@ -212,9 +212,9 @@ def content_general_info():
     * ไข่มีลักษณะโปร่งใส 
     * รูปร่างเป็นรูปไข่ และแบนเล็กน้อยที่ด้านหนึ่ง หรือเรียกว่า **D shape** 
   """)
-    step1, step2 = st.columns(2)
     st.subheader("_Enterobius vermicularis_ adult worms")
     st.caption("พยาธิเข็มหมุดตัวเต็มวัย")
+    step1, step2 = st.columns(2)
     with step1:
         st.image('https://www.cdc.gov/dpdx/enterobiasis/images/2/Evermicularis_adult2_Norway.jpg?_=04223')
         st.write(""" 
