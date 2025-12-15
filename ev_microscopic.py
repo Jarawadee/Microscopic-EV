@@ -214,6 +214,9 @@ def content_general_info():
     st.caption("พยาธิเข็มหมุดตัวเต็มวัย")
     step1, step2, step3 = st.columns(3)
     with step1:
+        st.image('https://ars.els-cdn.com/content/image/3-s2.0-B9780124159150000169-f16-20-9780124159150.gif')
+        
+    with step2:
         st.markdown("### (a) Adult male of _E. vermicularis_")
         st.caption("พยาธิเข็มหมุดตัวเต็มวัย (เพศผู้)")
         st.write("""
@@ -221,9 +224,6 @@ def content_general_info():
     * ตัวผู้มีปลายส่วนท้ายที่ทู่ โดยมีหนามเดี่ยว (spicule) หนึ่งอัน
     * บริเวณหัวมี cephalic expansions
   """)
-        
-    with step2:
-        st.image('https://ars.els-cdn.com/content/image/3-s2.0-B9780124159150000169-f16-20-9780124159150.gif')
         
     with step3:
         st.markdown("### (b) Adult female of _E. vermicularis_")
