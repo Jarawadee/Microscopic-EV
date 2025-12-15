@@ -161,7 +161,6 @@ def page_home():
         # --- ส่วนหัวและรูปภาพ ---
         st.markdown("<h1 style='text-align: center;'>🔬 Pinworm Disease Diagnosis App</h1>", unsafe_allow_html=True)
         st.markdown("<p style='text-align: center; color: gray;'>ระบบช่วยคัดกรองและให้ความรู้โรคพยาธิเข็มหมุดด้วย AI</p>", unsafe_allow_html=True)
-        st.write("ปกติ :blue[ข้อความสีฟ้า] :red[ข้อความสีแดง] :green[ข้อความสีเขียว]")
         st.image("Gemini_Generated_Image_i4nkkdi4nkkdi4nk.png", use_column_width=True)
         
         st.divider() # เส้นขีดคั่น
@@ -203,7 +202,7 @@ def content_general_info():
     """)
     st.divider()    
     
-    st.header("Morphology")
+    st.header("blue[Morphology]")
  
     st.subheader("_Enterobius vermicularis_ egg")
     st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
