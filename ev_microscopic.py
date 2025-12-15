@@ -216,10 +216,10 @@ def content_general_info():
     step1, step2 = st.columns(2)
     with step1:
         st.image('https://www.cdc.gov/dpdx/enterobiasis/images/2/Evermicularis_adult2_Norway.jpg?_=04223')
-        st.write("""blue[ 
+        st.write("""
     * ตัวผู้เต็มวัยของ Enterobius vermicularis มีขนาดยาวถึง 2.5 มิลลิเมตร กว้าง 0.1-0.2 มิลลิเมตร 
     * ตัวผู้มีปลายส่วนท้ายที่ทู่ โดยมีหนามเดี่ยว (spicule) หนึ่งอัน
-    * บริเวณหัวมี cephalic expansions]
+    * บริเวณหัวมี cephalic expansions
   """)
     with step2:
         st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
