@@ -205,6 +205,7 @@ def content_general_info():
     st.divider()    
     
     st.subheader("Morphology")
+    st.markdown("###_Enterobius vermicularis_ egg")
     st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
     st.write("""
     * ไข่ของพยาธิเข็มหมุด มีขนาด 50-60 ไมโครเมตร คูณ 20-30 ไมโครเมตร 
