@@ -289,7 +289,7 @@ def content_general_info():
     
     st.header("References")
     st.write("""
-    Centers for Disease Control and Prevention. (2024, June 7). Schistosomiasis.
+    Centers for Disease Control and Prevention. (2024, June 7). _Schistosomiasis_.
         https://www.cdc.gov/dpdx/schistosomiasis/index.html"""
 )
 
