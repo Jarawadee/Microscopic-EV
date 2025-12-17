@@ -203,7 +203,7 @@ def content_general_info():
     
     st.header(":blue-background[Morphology]")
  
-    st.subheader(":yellow-background[_Enterobius vermicularis_] egg")
+    st.subheader("_Enterobius vermicularis_ egg")
     st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
     st.caption("(Centers for Disease Control and Prevention [CDC], 2024)")
     st.write("""
@@ -303,7 +303,7 @@ def content_symptoms():
     * **นอนหลับไม่สนิท** เนื่องจากมีอาการคันและไม่สบายตัวตลอดเวลา""")
 
     st.subheader("ผลกระทบที่จะเกิดขึ้น")
-    st.write("""เมื่อเกิดการติดเชื้อพยาธิเข็มหมุด โดยเฉพาะในเด็กวัยเรียน อาการคันส่งผลต่อการพักผ่อนของเด็กในเวลากลางคืน ทำให้ :blue-background[**พักผ่อนไม่เพียงพอ***]
+    st.write("""เมื่อเกิดการติดเชื้อพยาธิเข็มหมุด โดยเฉพาะในเด็กวัยเรียน อาการคันส่งผลต่อการพักผ่อนของเด็กในเวลากลางคืน ทำให้ :yellow-background[**พักผ่อนไม่เพียงพอ**]
     สมาธิสั้นลงในตอนเช้าส่งผลให้ประสิทธิภาพในการเรียนรู้และจดจำลดลง """)
     
     st.write("""https://my.clevelandclinic.org/health/diseases/21137-pinworms""")
