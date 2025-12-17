@@ -201,7 +201,7 @@ def content_general_info():
     พยาธิตัวเมียจะอาศัยอยู่ในลำไส้ใหญ่ และจะคลานออกมาวางไข่รอบๆ ทวารหนักในเวลากลางคืน ทำให้เกิดอาการคันบริเวณทวารหนัก""")
     st.divider()    
     
-    st.header(":Pastal blue-background[Morphology]")
+    st.header(":blue-background[Morphology]")
  
     st.subheader(":yellow-background[_Enterobius vermicularis_] egg")
     st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
