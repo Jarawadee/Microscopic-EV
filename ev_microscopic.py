@@ -203,7 +203,7 @@ def content_general_info():
     
     st.header("Morphology")
  
-    st.subheader("_Enterobius vermicularis_ egg")
+    st.subheader(":yellow-background[_Enterobius vermicularis_] egg")
     st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
     st.caption("(Centers for Disease Control and Prevention [CDC], 2024)")
     st.write("""
