@@ -216,7 +216,7 @@ def content_general_info():
     step1, step2, step3 = st.columns(3)
     with step1:
         st.image('https://ars.els-cdn.com/content/image/3-s2.0-B9780124159150000169-f16-20-9780124159150.gif')
-        
+        st.write("Human Parasitology (Fourth Edition), 2013")
     with step2:
         st.markdown("### (a) Adult male of _E. vermicularis_")
         st.caption("พยาธิเข็มหมุดตัวเต็มวัย (เพศผู้)")
