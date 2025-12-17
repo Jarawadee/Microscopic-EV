@@ -205,18 +205,18 @@ def content_general_info():
  
     st.subheader("_Enterobius vermicularis_ egg")
     st.image('https://www.medical-labs.net/wp-content/uploads/2014/03/Eggs-of-E.-vermicularis-in-a-wet-mount.jpg')
-    st.caption("Centers for Disease Control and Prevention [CDC], 2024")
+    st.caption("(Centers for Disease Control and Prevention [CDC], 2024)")
     st.write("""
     * ไข่ของพยาธิเข็มหมุด รูปร่างรี และแบนเล็กน้อยที่ด้านหนึ่ง หรือเรียกว่า **D shape** 
     * มีขนาด 50-60 ไมโครเมตร คูณ 20-30 ไมโครเมตร 
     * ไข่มีลักษณะโปร่งใส 
   """)
     st.subheader("_Enterobius vermicularis_ adult worms")
-    st.caption("พยาธิเข็มหมุดตัวเต็มวัย")
+    st.caption("พยาธิเข็มหมุดตัวเต็มวัย") 
     step1, step2, step3 = st.columns(3)
     with step1:
         st.image('https://ars.els-cdn.com/content/image/3-s2.0-B9780124159150000169-f16-20-9780124159150.gif')
-        st.write("Human Parasitology (Fourth Edition), 2013")
+        st.caption("(Human Parasitology (Fourth Edition), 2013)")
     with step2:
         st.markdown("### (a) Adult male of _E. vermicularis_")
         st.caption("พยาธิเข็มหมุดตัวเต็มวัย (เพศผู้)")
@@ -247,6 +247,7 @@ def content_general_info():
     
     st.header("Life cycle")
     st.image("https://www.cdc.gov/dpdx/enterobiasis/modules/Enterobius_LifeCycl_lg.jpg" )
+    st.caption("(CDC, 2024)")
     st.markdown("""หนอนพยาธิเข็มหมุดตัวเมียที่โตเต็มวัยจะออกมาวางไข่บนรอยพับผิวหนังรอบทวารหนัก ทำให้เกิดอาการคันบริเวณทวารหนักเวลากลางคืน
     ซึ่งการติดเชื้อเกิดจากการปนเปื้อนตนเอง เช่น การกลืนกินไข่เข้าปากผ่านมือที่เกาบริเวณรอบทวารหนักแล้วไปหยิบจับอาหาร) หรือผ่านการสัมผัสกับไข่ในสิ่งแวดล้อม 
     (เช่น พื้นผิวที่ปนเปื้อน เสื้อผ้า ผ้าปูที่นอน ฯลฯ) 
