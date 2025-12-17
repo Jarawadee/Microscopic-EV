@@ -237,7 +237,7 @@ def content_general_info():
     
     st.divider()
     
-    st.header("Geographical Distribution")
+    st.header(":blue-background[Geographical Distribution]")
     st.image('เด็กวัยเรียน.png', width = 500)
     st.write("""
   พยาธิเข็มหมุดสามารถพบการติดเชื้อได้ทั่วโลก แต่มักพบการติดเชื้อบ่อยในเด็กวัยเรียนหรือเด็กก่อนวัยเรียน และในพื้นที่ที่มีสุขอนามัยที่ไม่ดีและสภาพแวดล้อมที่แออัด
@@ -245,7 +245,7 @@ def content_general_info():
     
     st.divider()
     
-    st.header("Life cycle")
+    st.header(":blue-background[Life cycle]")
     st.image("https://www.cdc.gov/dpdx/enterobiasis/modules/Enterobius_LifeCycl_lg.jpg" )
     st.caption("(CDC, 2024)")
     st.markdown("""หนอนพยาธิเข็มหมุดตัวเมียที่โตเต็มวัยจะออกมาวางไข่บนรอยพับผิวหนังรอบทวารหนัก ทำให้เกิดอาการคันบริเวณทวารหนักเวลากลางคืน
