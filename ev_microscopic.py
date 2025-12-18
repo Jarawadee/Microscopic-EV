@@ -400,6 +400,7 @@ def page_ai_detect():
         except Exception as e:
             st.error(f"Error: {e}")
 
+import image_data
 # 🟢 ฟังก์ชันหน้า Dataset
 def page_dataset():
     st.header("📊 Dataset Information")
@@ -407,50 +408,40 @@ def page_dataset():
     st.divider()
 
     # 1. ระบุชื่อโฟลเดอร์ที่เก็บรูป
-    image_folder = "dataset_images" 
-    
-    # ตรวจสอบว่ามีโฟลเดอร์จริงไหม
-    if not os.path.exists(image_folder):
-        st.error(f"⚠️ ไม่พบโฟลเดอร์ '{image_folder}' กรุณาสร้างโฟลเดอร์และใส่รูปภาพก่อนครับ")
+    images_dict = image_data.dataset 
+
+    if not images_dict:
+        st.warning("ไม่พบข้อมูลรูปภาพในไฟล์ image_data.py")
         return
 
-    # ดึงรายชื่อรูปภาพทั้งหมด (รองรับ jpg, png, tif, jpeg)
-    valid_exts = (".jpg", ".jpeg", ".png", ".tif")
-    images = [f for f in os.listdir(image_folder) if f.lower().endswith(valid_exts)]
+    # --- ส่วนแสดงผลแบบ Grid Gallery ---
+    cols = st.columns(4)
     
-    if not images:
-        st.warning("📂 ยังไม่มีรูปภาพในโฟลเดอร์")
-        return
-
-    # 2. สร้างตารางแสดงรูป (Grid Layout) แบบ 4 คอลัมน์
-    cols = st.columns(4) 
-    
-    for i, img_file in enumerate(images):
-        # คำนวณว่าจะใส่รูปลงคอลัมน์ไหน (0, 1, 2, 3)
+    # วนลูปดึงข้อมูล (ชื่อไฟล์, รหัส Base64) ออกมา
+    for i, (filename, b64_str) in enumerate(images_dict.items()):
         col_index = i % 4
         
-        file_path = os.path.join(image_folder, img_file)
-        
         with cols[col_index]:
-            # ใช้ container สร้างกรอบให้ดูเป็นสัดส่วน
             with st.container(border=True):
-                # แสดงรูปภาพ
-                st.image(file_path, use_column_width=True)
-                
-                # แสดงชื่อไฟล์ (ถ้าต้องการ)
-                # st.caption(img_file)
-                
-                # ปุ่มดาวน์โหลด (Download Button)
-                with open(file_path, "rb") as file:
+                try:
+                    # 2. แปลงรหัส Base64 กลับเป็นรูปภาพ (Binary)
+                    img_bytes = base64.b64decode(b64_str)
+                    
+                    # แสดงรูป
+                    st.image(img_bytes, use_column_width=True)
+                    st.caption(f"📄 {filename}")
+                    
+                    # ปุ่มดาวน์โหลด
                     st.download_button(
-                        label="⬇️ ดาวน์โหลด",
-                        data=file,
-                        file_name=img_file,
-                        mime="image/jpeg", # หรือ image/png ตามไฟล์จริง
-                        key=f"dl_{i}",     # key ห้ามซ้ำกัน จำเป็นต้องใส่
-                        use_container_width=True # ให้ปุ่มเต็มความกว้าง
+                        label="⬇️ โหลด",
+                        data=img_bytes,
+                        file_name=filename,
+                        mime="image/jpeg", # หรือ image/png
+                        key=f"dl_btn_{i}",
+                        use_container_width=True
                     )
-    
+                except Exception as e:
+                    st.error(f"Error loading {filename}")
 
 
 
