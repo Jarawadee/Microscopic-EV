@@ -170,7 +170,7 @@ def page_home():
         step1, step2, step3 = st.columns(3)
         with step1:
             st.markdown("**1. เตรียมภาพ**")
-            st.caption("ถ่ายภาพไข่พยาธิจากกล้องจุลทรรศน์ด้วยสมาร์ทโฟน")
+            st.caption("ถ่ายภาพไข่พยาธิภายใต้กล้องจุลทรรศน์")
             st.image("Gemini_Generated_Image_r8j3mcr8j3mcr8j3.png", use_column_width=True)
         with step2:
             st.markdown("**2. อัปโหลด**")
