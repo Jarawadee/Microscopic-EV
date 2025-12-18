@@ -405,6 +405,28 @@ def page_dataset():
     st.header("📊 Dataset Information")
     st.markdown("รวมภาพถ่ายไข่พยาธิเข็มหมุดจากกล้องจุลทรรศน์ คุณสามารถเลือกดาวน์โหลดรูปที่ต้องการเพื่อทดลงใช้งานได้")
     st.divider()
+    col1, col2, col3, col4 = st.columns(4)
+
+    # --- แถวที่ 1 ---
+    with col1:
+        st.image("IMG_20250610_142954.jpg", caption="รูปที่ 1")
+        with open("IMG_20250610_142954.jpg", "rb") as f:
+            st.download_button("⬇️ โหลด", f, file_name="Pinworm_01.jpg", key="dl1")
+
+    with col2:
+        st.image("IMG_20250610_143236.jpg", caption="รูปที่ 2")
+        with open("IMG_20250610_143236.jpg", "rb") as f:
+            st.download_button("⬇️ โหลด", f, file_name="Pinworm_02.jpg", key="dl2")
+
+    with col3:
+        st.image("IMG_20250610_143321.jpg", caption="รูปที่ 3")
+        with open("IMG_20250610_143321.jpg", "rb") as f:
+            st.download_button("⬇️ โหลด", f, file_name="Pinworm_03.jpg", key="dl3")
+
+    with col4:
+        st.image("IMG_20250610_143349.jpg", caption="รูปที่ 4")
+        with open("IMG_20250610_143349.jpg", "rb") as f:
+            st.download_button("⬇️ โหลด", f, file_name="Pinworm_04.jpg", key="dl4")
 
 
 # ==========================================
