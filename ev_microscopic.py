@@ -307,7 +307,7 @@ def content_symptoms():
     
     st.divider()        
     st.subheader("ผลกระทบที่จะเกิดขึ้น")
-    st.image("Maluntri.png")
+    st.image("ผลกระทบ.png")
     st.write("""เมื่อติดเชื้อพยาธิเข็มหมุด จะส่งผลกระทบหลักโดยเฉพาะในเด็กวัยเรียน""")
     st.markdown("""
     * อาการคันส่งผลต่อการพักผ่อนของเด็กในเวลากลางคืน ทำให้ :yellow-background[**พักผ่อนไม่เพียงพอ**]
