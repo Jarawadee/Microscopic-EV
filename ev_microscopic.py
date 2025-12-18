@@ -179,6 +179,7 @@ def page_home():
         with step3:
             st.markdown("**3. ประมวลผลลัพธ์**")
             st.caption("AI จะระบุตำแหน่งไข่พยาธิในภาพถ่าย")
+            st.image("ตัวอย่างไข่พยาธิ.png", use_column_width=True)
 
         st.divider()
 
