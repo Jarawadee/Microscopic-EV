@@ -400,49 +400,11 @@ def page_ai_detect():
         except Exception as e:
             st.error(f"Error: {e}")
 
-import image_data
 # 🟢 ฟังก์ชันหน้า Dataset
 def page_dataset():
     st.header("📊 Dataset Information")
     st.markdown("รวมภาพถ่ายไข่พยาธิเข็มหมุดจากกล้องจุลทรรศน์ คุณสามารถเลือกดาวน์โหลดรูปที่ต้องการเพื่อทดลงใช้งานได้")
     st.divider()
-
-    # 1. ระบุชื่อโฟลเดอร์ที่เก็บรูป
-    images_dict = image_data.dataset 
-
-    if not images_dict:
-        st.warning("ไม่พบข้อมูลรูปภาพในไฟล์ image_data.py")
-        return
-
-    # --- ส่วนแสดงผลแบบ Grid Gallery ---
-    cols = st.columns(4)
-    
-    # วนลูปดึงข้อมูล (ชื่อไฟล์, รหัส Base64) ออกมา
-    for i, (filename, b64_str) in enumerate(images_dict.items()):
-        col_index = i % 4
-        
-        with cols[col_index]:
-            with st.container(border=True):
-                try:
-                    # 2. แปลงรหัส Base64 กลับเป็นรูปภาพ (Binary)
-                    img_bytes = base64.b64decode(b64_str)
-                    
-                    # แสดงรูป
-                    st.image(img_bytes, use_column_width=True)
-                    st.caption(f"📄 {filename}")
-                    
-                    # ปุ่มดาวน์โหลด
-                    st.download_button(
-                        label="⬇️ โหลด",
-                        data=img_bytes,
-                        file_name=filename,
-                        mime="image/jpeg", # หรือ image/png
-                        key=f"dl_btn_{i}",
-                        use_container_width=True
-                    )
-                except Exception as e:
-                    st.error(f"Error loading {filename}")
-
 
 
 # ==========================================
