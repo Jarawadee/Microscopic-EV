@@ -459,7 +459,7 @@ def page_dataset():
     with col4:
         show_card("pinworm_08.jpg", "ไข่พยาธิ 08", 8)
 
-     col9, col10, col11, col12 = st.columns(4)
+    col9, col10, col11, col12 = st.columns(4)
 
     # --- แถวที่ 1 (เรียกใช้ฟังก์ชัน บรรทัดเดียวจบ!) ---
     with col1:
