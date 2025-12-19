@@ -433,10 +433,10 @@ def page_dataset():
 
     # --- แถวที่ 1 (เรียกใช้ฟังก์ชัน บรรทัดเดียวจบ!) ---
     with col1:
-        show_card("pinworm_01.jpg", "ไข่พยาธิ 01", 1)
+        show_card("pinworm_11.jpg", "ไข่พยาธิ 01", 1)
 
     with col2:
-        show_card("pinworm_02.jpg", "ไข่พยาธิ 02", 2)
+        show_card("pinworm_12.jpg", "ไข่พยาธิ 02", 2)
 
     with col3:
         show_card("pinworm_03.jpg", "ไข่พยาธิ 03", 3)
@@ -447,32 +447,62 @@ def page_dataset():
     col5, col6, col7, col8 = st.columns(4)
 
     # --- แถวที่ 1 (เรียกใช้ฟังก์ชัน บรรทัดเดียวจบ!) ---
-    with col1:
+    with col5:
         show_card("pinworm_05.jpg", "ไข่พยาธิ 05", 5)
 
-    with col2:
+    with col6:
         show_card("pinworm_06.jpg", "ไข่พยาธิ 06", 6)
 
-    with col3:
+    with col7:
         show_card("pinworm_07.jpg", "ไข่พยาธิ 07", 7)
 
-    with col4:
+    with col8:
         show_card("pinworm_08.jpg", "ไข่พยาธิ 08", 8)
 
     col9, col10, col11, col12 = st.columns(4)
 
     # --- แถวที่ 1 (เรียกใช้ฟังก์ชัน บรรทัดเดียวจบ!) ---
-    with col1:
+    with col9:
         show_card("pinworm_09.jpg", "ไข่พยาธิ 09", 9)
 
-    with col2:
+    with col10:
         show_card("pinworm_10.jpg", "ไข่พยาธิ 10", 10)
 
-    with col3:
-        show_card("pinworm_11.jpg", "ไข่พยาธิ 11", 11)
+    with col11:
+        show_card("pinworm_01.jpg", "ไข่พยาธิ 11", 11)
 
-    with col4:
-        show_card("pinworm_12.jpg", "ไข่พยาธิ 12", 12)   
+    with col12:
+        show_card("pinworm_02.jpg", "ไข่พยาธิ 12", 12)   
+
+    col13, col14, col15, col16 = st.columns(4)
+
+    # --- แถวที่ 1 (เรียกใช้ฟังก์ชัน บรรทัดเดียวจบ!) ---
+    with col13:
+        show_card("pinworm_13.jpg", "ไข่พยาธิ 13", 13)
+
+    with col14:
+        show_card("pinworm_14.jpg", "ไข่พยาธิ 14", 14)
+
+    with col15:
+        show_card("pinworm_15.jpg", "ไข่พยาธิ 15", 15)
+
+    with col16:
+        show_card("pinworm_16.jpg", "ไข่พยาธิ 16", 16) 
+
+    col17, col18, col19, col20 = st.columns(4)
+    
+    with col13:
+        show_card("pinworm_17.jpg", "ไข่พยาธิ 17", 17)
+
+    with col14:
+        show_card("pinworm_18.jpg", "ไข่พยาธิ 18", 18)
+
+    with col19:
+        show_card("pinworm_19.jpg", "ไข่พยาธิ 19", 19)
+
+    with col20:
+        show_card("pinworm_20.jpg", "ไข่พยาธิ 20", 20)
+ 
     
     # st.divider() # ถ้าจะขึ้นแถว 2 ก็ทำเหมือนเดิมครับ
 
