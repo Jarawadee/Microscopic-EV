@@ -166,6 +166,7 @@ def page_home():
         st.divider() # เส้นขีดคั่น
         st.subheader("แนะนำเมนูการใช้งาน")
         st.image("Gemini_Generated_Image_2xhw452xhw452xhw.png")
+        st.write(" สามารถเลือกเมนูไปที่แถบทางด้ายซ้ายมือ ประกอบด้วย :blue-background[หน้าหลัก] แนะนำการใช้งาน :blue-background[ความรู้เกี่ยวกับโรคพยาธิเข็มหมุด] ประกอบด้วย ข้อมูลทั่วไป อาการ การป้องกันและการรักษา :blue-background[เครื่องมือและข้อมูล] ประกอบด้วย AI detection และ Dataset  ")
 
         st.divider() # เส้นขีดคั่น
 
