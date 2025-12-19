@@ -478,13 +478,13 @@ def page_dataset():
 
     # --- แถวที่ 1 (เรียกใช้ฟังก์ชัน บรรทัดเดียวจบ!) ---
     with col13:
-        show_card("pinworm_13.jpg", "ไข่พยาธิ 13", 13)
+        show_card("pinworm_19.jpg", "ไข่พยาธิ 13", 13)
 
     with col14:
         show_card("pinworm_14.jpg", "ไข่พยาธิ 14", 14)
 
     with col15:
-        show_card("pinworm_15.jpg", "ไข่พยาธิ 15", 15)
+        show_card("pinworm_20.jpg", "ไข่พยาธิ 15", 15)
 
     with col16:
         show_card("pinworm_16.jpg", "ไข่พยาธิ 16", 16) 
@@ -498,10 +498,10 @@ def page_dataset():
         show_card("pinworm_18.jpg", "ไข่พยาธิ 18", 18)
 
     with col19:
-        show_card("pinworm_19.jpg", "ไข่พยาธิ 19", 19)
+        show_card("pinworm_13.jpg", "ไข่พยาธิ 19", 19)
 
     with col20:
-        show_card("pinworm_20.jpg", "ไข่พยาธิ 20", 20)
+        show_card("pinworm_15.jpg", "ไข่พยาธิ 20", 20)
  
     
     # st.divider() # ถ้าจะขึ้นแถว 2 ก็ทำเหมือนเดิมครับ
