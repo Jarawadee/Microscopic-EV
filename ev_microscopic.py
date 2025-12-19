@@ -491,10 +491,10 @@ def page_dataset():
 
     col17, col18, col19, col20 = st.columns(4)
     
-    with col13:
+    with col17:
         show_card("pinworm_17.jpg", "ไข่พยาธิ 17", 17)
 
-    with col14:
+    with col18:
         show_card("pinworm_18.jpg", "ไข่พยาธิ 18", 18)
 
     with col19:
