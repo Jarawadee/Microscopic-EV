@@ -164,6 +164,10 @@ def page_home():
         st.image("Gemini_Generated_Image_i4nkkdi4nkkdi4nk.png", use_column_width=True)
         
         st.divider() # เส้นขีดคั่น
+        st.subheader("แนะนำเมนูการใช้งาน")
+        st.image("Gemini_Generated_Image_2xhw452xhw452xhw.png")
+
+        st.divider() # เส้นขีดคั่น
 
         # --- ส่วนที่ 2: How it works (ขั้นตอนง่ายๆ) ---
         st.subheader("💡 ขั้นตอนการใช้งาน")
