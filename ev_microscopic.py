@@ -410,7 +410,10 @@ def page_ai_detect():
                 st.warning("Model not loaded (ev_cnn_mobile.keras not found).")
         except Exception as e:
             st.error(f"Error: {e}")
-
+            
+      st.warning("""
+        **⚠️ คำเตือน:** หากพบปัญหา ติดต่อ Email: jarawadee0414@gmail.com หรือโทร 0991970414
+        """)
 
 def show_card(file_name, title, key_id):
     # สร้างกรอบสวยๆ ล้อมรอบ
