@@ -389,27 +389,28 @@ def page_ai_detect():
 
             if model is not None:
                 with st.spinner('กำลังวิเคราะห์ภาพด้วย AI...'):
-                    # สมมติฟังก์ชัน ObjectDet
+                    # ส่วนประมวลผล
                     output_img_bgr = ObjectDet(image_bgr, detection_threshold, nms_threshold, merge_iou_threshold)
                 
+                # แปลงสีภาพผลลัพธ์
                 output_img_rgb = cv2.cvtColor(output_img_bgr, cv2.COLOR_BGR2RGB)
                 
+                # แสดงผลรูปภาพในคอลัมน์ขวา
                 with col2:
                     st.subheader("ผลการวิเคราะห์")
                     st.image(output_img_rgb, caption="AI Result", use_column_width=True)
                 
-                # ✅ ย้ายมาไว้ตรงนี้ครับ (ย่อหน้าให้ตรงกับ with col2 หรือ if model)
-                # เมื่อ code รันถึงบรรทัดนี้ แปลว่ารูปโชว์เสร็จแล้ว
-                    st.divider() # ขีดเส้นคั่นหน่อยจะได้สวย
-                    st.warning("""
+                # --- จุดสำคัญ: ต้องย่อหน้าให้ตรงกับคำว่า with col2 (แต่อย่าอยู่ใน with) ---
+                st.write("") # เว้นบรรทัดนิดนึง
+                st.success("✅ วิเคราะห์เสร็จสิ้น") 
+                
+                st.warning("""
                     **⚠️ คำเตือน:** หากพบปัญหา ติดต่อ Email: jarawadee0414@gmail.com หรือโทร 0991970414
                 """)
+                # ------------------------------------------------------------------
 
             else:
                 st.warning("Model not loaded (ev_cnn_mobile.keras not found).")
-                
-        except Exception as e:
-            st.error(f"Error: {e}")
 
 
 def show_card(file_name, title, key_id):
