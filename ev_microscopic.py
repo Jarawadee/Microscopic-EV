@@ -400,8 +400,8 @@ def page_ai_detect():
                 
                 # ✅ ย้ายมาไว้ตรงนี้ครับ (ย่อหน้าให้ตรงกับ with col2 หรือ if model)
                 # เมื่อ code รันถึงบรรทัดนี้ แปลว่ารูปโชว์เสร็จแล้ว
-                st.divider() # ขีดเส้นคั่นหน่อยจะได้สวย
-                st.warning("""
+                    st.divider() # ขีดเส้นคั่นหน่อยจะได้สวย
+                    st.warning("""
                     **⚠️ คำเตือน:** หากพบปัญหา ติดต่อ Email: jarawadee0414@gmail.com หรือโทร 0991970414
                 """)
 
@@ -410,6 +410,8 @@ def page_ai_detect():
                 
         except Exception as e:
             st.error(f"Error: {e}")
+
+
 def show_card(file_name, title, key_id):
     # สร้างกรอบสวยๆ ล้อมรอบ
     with st.container(border=True):
