@@ -373,25 +373,14 @@ def page_knowledge_hub():
         content_prevention()
 
 # 🟢 ฟังก์ชันหน้า AI Detection
+
+
 def page_ai_detect():
-    st.title("🔎 AI Detection")
-    st.info("ผู้ใช้งานสามารถโหลดรูปภาพตัวอย่างไข่พยาธิเข็มหมุด ได้ที่เมนู ** 📊 Dataset**")
-    st.write("")
-    st.markdown("โปรดอัปโหลดภาพจากกล้องจุลทรรศน์ (Scotch Tape Technique) เพื่อทำการวิเคราะห์")
-
-    # Fixed Parameters
-    detection_threshold = 0.95
-    nms_threshold = 0
-    merge_iou_threshold = 0
-   
-
-    uploaded_file = st.file_uploader("เลือกไฟล์รูปภาพ (PNG, JPG, JPEG, TIF)", type=["png", "jpg", "jpeg", "tif"])
-
+    # ... (ส่วนหัวข้อและ upload file) ...
+    
     if uploaded_file is not None:
         try:
-            image = Image.open(uploaded_file)
-            image_np = np.array(image.convert("RGB"))
-            image_bgr = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
+            # ... (ส่วนแปลงภาพ) ...
 
             col1, col2 = st.columns(2)
             with col1:
@@ -400,21 +389,27 @@ def page_ai_detect():
 
             if model is not None:
                 with st.spinner('กำลังวิเคราะห์ภาพด้วย AI...'):
+                    # สมมติฟังก์ชัน ObjectDet
                     output_img_bgr = ObjectDet(image_bgr, detection_threshold, nms_threshold, merge_iou_threshold)
                 
                 output_img_rgb = cv2.cvtColor(output_img_bgr, cv2.COLOR_BGR2RGB)
+                
                 with col2:
                     st.subheader("ผลการวิเคราะห์")
                     st.image(output_img_rgb, caption="AI Result", use_column_width=True)
+                
+                # ✅ ย้ายมาไว้ตรงนี้ครับ (ย่อหน้าให้ตรงกับ with col2 หรือ if model)
+                # เมื่อ code รันถึงบรรทัดนี้ แปลว่ารูปโชว์เสร็จแล้ว
+                st.divider() # ขีดเส้นคั่นหน่อยจะได้สวย
+                st.warning("""
+                    **⚠️ คำเตือน:** หากพบปัญหา ติดต่อ Email: jarawadee0414@gmail.com หรือโทร 0991970414
+                """)
+
             else:
                 st.warning("Model not loaded (ev_cnn_mobile.keras not found).")
+                
         except Exception as e:
             st.error(f"Error: {e}")
-            
-st.warning("""
-        **⚠️ คำเตือน:** หากพบปัญหา ติดต่อ Email: jarawadee0414@gmail.com หรือโทร 0991970414
-        """)
-
 def show_card(file_name, title, key_id):
     # สร้างกรอบสวยๆ ล้อมรอบ
     with st.container(border=True):
