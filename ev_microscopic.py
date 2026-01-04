@@ -411,7 +411,7 @@ def page_ai_detect():
         except Exception as e:
             st.error(f"Error: {e}")
             
-      st.warning("""
+    st.warning("""
         **⚠️ คำเตือน:** หากพบปัญหา ติดต่อ Email: jarawadee0414@gmail.com หรือโทร 0991970414
         """)
 
