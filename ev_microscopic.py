@@ -1,30 +1,16 @@
 import streamlit as st
-
 import cv2
-
 import numpy as np
-
 import tensorflow as tf
-
 from PIL import Image
-
 import os
 
-
-
 # --- 1. Config หลักของแอป (ต้องอยู่บรรทัดแรกๆ) ---
-
 st.set_page_config(
-
     page_title="Pinworm Disease Diagnosis App",
-
     layout="wide",
-
     initial_sidebar_state="expanded"
-
 )
-
-
 
 # ==========================================
 
@@ -32,26 +18,15 @@ st.set_page_config(
 
 # ==========================================
 
-
-
 @st.cache_resource()
-
 def load_model():
-
     model_path = 'ev_cnn_mobile.keras'
-
     try:
-
         model = tf.keras.models.load_model(model_path, custom_objects={'mse': tf.keras.losses.MeanSquaredError()})
-
         return model
-
     except FileNotFoundError:
-
         return None
-
     except Exception as e:
-
         return None
 
 
@@ -818,7 +793,8 @@ def page_ai_detect():
 
                 st.warning("Model not loaded (ev_cnn_mobile.keras not found).")
 
-
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
 
 
