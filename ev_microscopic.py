@@ -11,6 +11,11 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+DEFAULT_THRESHOLD = 0.5
+DEFAULT_NMS_THRESHOLD = 0.3
+DEFAULT_MERGE_IOU_THRESHOLD = 0.2
+
 # ==========================================
 # ส่วนที่ 1: เตรียมฟังก์ชันสำหรับ AI และ Model
 # ==========================================
