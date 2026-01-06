@@ -32,43 +32,29 @@ def load_model():
 
 
 model = load_model()
-
 class_label = ["Artifact", "Ev eggs"]
 
 
-
 def drawbox(img, label, a, b, c, d, color):
-
     image = cv2.rectangle(img, (c, a), (d, b), color, 3)
-
     image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, color, 3)
-
     return image
 
 
 
 def compute_iou(box1, box2):
-
     y1 = max(box1[0], box2[0])
-
     y2 = min(box1[1], box2[1])
-
     x1 = max(box1[2], box2[2])
-
     x2 = min(box1[3], box2[3])
-
+    
     inter_w = max(0, x2 - x1)
-
     inter_h = max(0, y2 - y1)
-
     inter_area = inter_w * inter_h
-
     box1_area = (box1[1] - box1[0]) * (box1[3] - box1[2])
-
     box2_area = (box2[1] - box2[0]) * (box2[3] - box2[2])
-
+    
     union_area = box1_area + box2_area - inter_area
-
     if union_area == 0: return 0
 
     return inter_area / union_area
@@ -76,23 +62,12 @@ def compute_iou(box1, box2):
 
 
 def nms(detections, iou_threshold):
-
     nms_dets = []
-
     if not detections: return []
-
     class_indices = set([d['class_idx'] for d in detections])
-
     for class_idx in class_indices:
-
         class_dets = [d for d in detections if d['class_idx'] == class_idx]
-
-        class_dets = sorted(class_dets, key=lambda x: x['score'], reverse=True)
-
-        keep = []
-
         while class_dets:
-
             curr = class_dets.pop(0)
 
             keep.append(curr)
@@ -102,8 +77,6 @@ def nms(detections, iou_threshold):
         nms_dets.extend(keep)
 
     return nms_dets
-
-
 
 def merge_connected_boxes_by_class(detections, merge_iou_threshold):
 
