@@ -12,9 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 # ==========================================
-
 # ส่วนที่ 1: เตรียมฟังก์ชันสำหรับ AI และ Model
-
 # ==========================================
 
 @st.cache_resource()
@@ -39,8 +37,6 @@ def drawbox(img, label, a, b, c, d, color):
     image = cv2.putText(image, label, (c, a - 10), cv2.FONT_HERSHEY_TRIPLEX, 3, color, 3)
     return image
 
-
-
 def compute_iou(box1, box2):
     y1 = max(box1[0], box2[0])
     y2 = min(box1[1], box2[1])
@@ -58,8 +54,6 @@ def compute_iou(box1, box2):
 
     return inter_area / union_area
 
-
-
 def nms(detections, iou_threshold):
     nms_dets = []
     if not detections: return []
@@ -68,47 +62,33 @@ def nms(detections, iou_threshold):
         class_dets = [d for d in detections if d['class_idx'] == class_idx]
         while class_dets:
             curr = class_dets.pop(0)
-
             keep.append(curr)
-
             class_dets = [d for d in class_dets if compute_iou(curr['bbox'], d['bbox']) < iou_threshold]
 
         nms_dets.extend(keep)
-
     return nms_dets
 
 def merge_connected_boxes_by_class(detections, merge_iou_threshold):
-
+    
     merged = []
 
     if not detections: return []
-
     class_indices = set([d['class_idx'] for d in detections])
-
+    
     for class_idx in class_indices:
-
         class_dets = [d for d in detections if d['class_idx'] == class_idx]
-
         used = set()
-
         groups = []
 
         for i, det in enumerate(class_dets):
-
             if i in used: continue
-
             group = [det]
-
             used.add(i)
-
             changed = True
-
             while changed:
-
                 changed = False
-
                 newly_added = []
-
+                
                 for j, other in enumerate(class_dets):
 
                     if j in used: continue
@@ -150,83 +130,55 @@ def merge_connected_boxes_by_class(detections, merge_iou_threshold):
 
 
 def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
-
     box_size_y, box_size_x, step_size = 500, 500, 50
-
     resize_input_y, resize_input_x = 64, 64
-
     img_h, img_w = img.shape[:2]
-
     coords = []
-
     patches = []
 
-    
-
     for i in range(0, img_h - box_size_y + 1, step_size):
-
         for j in range(0, img_w - box_size_x + 1, step_size):
-
             img_patch = img[i:i+box_size_y, j:j+box_size_x]
-
             brightness = np.mean(cv2.cvtColor(img_patch, cv2.COLOR_BGR2GRAY))
 
             if brightness < 50: continue
 
             img_patch_resized = cv2.resize(img_patch, (resize_input_y, resize_input_x), interpolation=cv2.INTER_AREA)
-
             patches.append(img_patch_resized)
-
             coords.append((i, j))
 
-
-
     if not patches: return img
-
     patches = np.array(patches)
-
     if model is None: return img
 
         
 
     y_out = model.predict(patches, batch_size=64, verbose=0)
-
     detections = []
 
     for idx, pred in enumerate(y_out):
-
         for class_idx in range(len(class_label)):
 
             score = pred[class_idx]
 
             if score > threshold and class_idx != 0:
-
                 a, c = coords[idx]
-
                 b, d = a + box_size_y, c + box_size_x
-
                 detections.append({"bbox": [a, b, c, d], "score": float(score), "class_idx": class_idx})
-
-
 
     nms_detections = nms(detections, iou_threshold=nms_threshold)
 
     if merge_iou_threshold is not None and merge_iou_threshold > 0:
-
         final_detections = merge_connected_boxes_by_class(nms_detections, merge_iou_threshold=merge_iou_threshold)
 
     else:
-
         final_detections = nms_detections
 
 
 
     img_output = img.copy()
-
     colors = [(0,255,0), (255,0,0)] 
-
     for det in final_detections:
-
         a, b, c, d = det['bbox']
         class_idx = det['class_idx']
         label = f"{class_label[class_idx]}: {det['score']:.2f}"
@@ -237,32 +189,23 @@ def ObjectDet(img, threshold, nms_threshold, merge_iou_threshold):
 
 
 # ==========================================
-
 # ส่วนที่ 2: สร้างฟังก์ชันสำหรับแต่ละหน้า (Page Functions)
-
 # ==========================================
 
 
 
 # 1. ฟังก์ชันหน้า Homepage
-
 # แก้ไขฟังก์ชัน page_home
 
-
-
 def page_home():
-
     # จัด Layout ให้อยู่กึ่งกลาง (เว้นซ้ายขวาอย่างละ 1 ส่วน เนื้อหาตรงกลาง 2 ส่วน)
     col1, main_col, col3 = st.columns([1, 6, 1])
 
     with main_col:
         # --- ส่วนหัวและรูปภาพ ---
-
         st.markdown("<h1 style='text-align: center;'>🔬 Pinworm Disease Diagnosis App</h1>", unsafe_allow_html=True)
         st.markdown("<p style='text-align: center; color: gray;'>ระบบช่วยคัดกรองและให้ความรู้โรคพยาธิเข็มหมุดด้วย AI</p>", unsafe_allow_html=True)
         st.image("Gemini_Generated_Image_i4nkkdi4nkkdi4nk.png", use_column_width=True)
-
-        
 
         #st.divider() # เส้นขีดคั่น
         #st.subheader("แนะนำเมนูการใช้งาน")
@@ -276,53 +219,36 @@ def page_home():
         step1, step2, step3 = st.columns(3)
 
         with step1:
-
             st.markdown("**1. เตรียมภาพ**")
-
             st.caption("ถ่ายภาพไข่พยาธิภายใต้กล้องจุลทรรศน์")
-
             st.image("Gemini_Generated_Image_r8j3mcr8j3mcr8j3.png", use_column_width=True)
 
         with step2:
 
             st.markdown("**2. อัปโหลด**")
-
             st.caption("ไปที่เมนู AI Detection และเลือกไฟล์รูป         ")
-
             st.image("unnamed.png", use_column_width=True)
 
         with step3:
-
             st.markdown("**3. ประมวลผลลัพธ์**")
-
             st.caption("AI จะระบุตำแหน่งไข่พยาธิในภาพถ่าย")
-
             st.image("ตัวอย่างไข่พยาธิ.png", use_column_width=True)
 
-
-
         st.divider()
-
-
 
         # --- ส่วนที่ 3: ปุ่มทางลัด (Call to Action) ---
 
         # หมายเหตุ: ปุ่ม switch_page ต้องใช้คู่กับ st.navigation หรือ setup ที่ถูกต้อง
-
         # ถ้ายังทำปุ่มลิ้งค์ไม่ได้ ให้ใช้ข้อความเชิญชวนแทน
 
         st.info("👉 พร้อมแล้วใช่ไหม? ไปที่เมนูที่คุณสนใจทางด้านซ้ายมือ เลือก **'ความรู้เกี่ยวกับโรค'** เพื่อศึกษาข้อมูลเกี่ยวกับโรคเบื้องต้น เลือก **'AI Detection'** เพื่อเริ่มวิเคราะห์")
-
-    
 
         # --- ส่วนที่ 1: Medical Disclaimer (สำคัญมาก!) ---
 
         st.warning("""
 
         **⚠️ คำเตือน:** ผลลัพธ์จาก AI นี้ใช้เพื่อการ **คัดกรองเบื้องต้นเท่านั้น** ไม่สามารถใช้แทนการวินิจฉัยโดยแพทย์หรือนักเทคนิคการแพทย์ได้ 
-
         หากมีอาการผิดปกติ ควรปรึกษาแพทย์ผู้เชี่ยวชาญเพื่อการรักษาที่ถูกต้อง
-
         """)
 
         st.divider()
@@ -330,34 +256,21 @@ def page_home():
         st.subheader("ผู้สนับสนุน")
 
         with st.container(border=True):
-
             st.write(""" * งบประมาณสนับสนุนของโครงการได้รับจากทุนส่งเสริมกลุ่มวิจัยศักยภาพสูง ประจำปี 2567 (สัญญาเลขที่ N42A670561)""")
-
             st.write(""" * ทุนจากบัณฑิตวิทยาลัย มหาวิทยาลัยวลัยลักษณ์""")
 
 
-
-
-
 # 2. ฟังก์ชันเนื้อหาความรู้ย่อย
-
 def content_general_info():
 
     st.markdown("""
-
     **โรคพยาธิเข็มหมุด (enterobiasis) เกิดจากการติดเชื้อพยาธิเข็มหมุด (_Enterobius vermicularis_)** เป็นพยาธิตัวกลมขนาดเล็ก สีขาว คล้ายเส้นด้าย พบบ่อยในเด็กทั่วโลก 
-
     โดยพยาธิตัวเมียจะอาศัยอยู่ในลำไส้ใหญ่ และจะคลานออกมาวางไข่รอบๆ ทวารหนักในเวลากลางคืน ทำให้เกิดอาการคันบริเวณทวารหนัก ซึ่งสามารถป้องกันได้โดยรักษาความสะอาดอยู่สม่ำเสมอ 
-
     และเมื่อติดเชื้อแล้วสามารถรักษาให้หายได้""")
 
     st.divider()    
 
-    
-
     st.header(":blue-background[Morphology]")
-
- 
 
     st.subheader("_Enterobius vermicularis_ egg")
 
@@ -366,59 +279,37 @@ def content_general_info():
     st.caption("(Centers for Disease Control and Prevention [CDC], 2024)")
 
     st.write("""
-
     * ไข่ของพยาธิเข็มหมุด รูปร่างรี และแบนเล็กน้อยที่ด้านหนึ่ง หรือเรียกว่า **D shape** 
-
     * มีขนาด 50-60 ไมโครเมตร คูณ 20-30 ไมโครเมตร 
-
     * ไข่มีลักษณะโปร่งใส 
-
   """)
 
+
     st.subheader("_Enterobius vermicularis_ adult worms")
-
     st.caption("พยาธิเข็มหมุดตัวเต็มวัย") 
-
     step1, step2, step3 = st.columns(3)
 
     with step1:
-
         st.image('https://ars.els-cdn.com/content/image/3-s2.0-B9780124159150000169-f16-20-9780124159150.gif')
-
         st.caption("(Human Parasitology (Fourth Edition), 2013)")
 
     with step2:
-
         st.markdown("### (a) Adult male of _E. vermicularis_")
-
         st.caption("พยาธิเข็มหมุดตัวเต็มวัย (เพศผู้)")
-
         st.write("""
-
     * ตัวเต็มวัยเพศผู้ มีขนาดยาวถึง 2.5 มิลลิเมตร กว้าง 0.1-0.2 มิลลิเมตร 
-
     * ตัวผู้มีปลายส่วนท้ายที่ทู่ โดยมีหนามเดี่ยว (spicule) หนึ่งอัน
-
     * บริเวณหัวมี cephalic expansions
-
   """)
-
-        
 
     with step3:
 
         st.markdown("### (b) Adult female of _E. vermicularis_")
-
         st.caption("พยาธิเข็มหมุดตัวเต็มวัย (เพศเมีย)")
-
         st.write(""" 
-
     * ตัวเต็มวัยเพศเมีย มีขนาดยาว 8-13 มิลลิเมตร กว้าง 0.3-0.5 มิลลิเมตร  
-
     * ตัวเมียมีหางยาวแหลม 
-
     * บริเวณหัวมี cephalic expansions
-
   """)
 
     
