@@ -26,8 +26,6 @@ def load_model():
     except Exception as e:
         return None
 
-
-
 model = load_model()
 class_label = ["Artifact", "Ev eggs"]
 
