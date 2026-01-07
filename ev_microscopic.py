@@ -331,9 +331,6 @@ def content_symptoms():
     * พยาธิเส้นด้ายอาจไชเข้าไปในช่องคลอด ทำให้เกิดอาการ :yellow-background[**ช่องคลอดหรือปากมดลูกอักเสบ**]""")
     
 
-
-   
-
 def content_prevention():
     st.header("🛡️ การป้องกันและการรักษา")
     st.subheader("การป้องกัน")
@@ -377,6 +374,12 @@ def page_knowledge_hub():
 
 def page_ai_detect():
     # ... (ส่วนหัวข้อและ upload file) ...
+    uploaded_files = st.file_uploader(
+    "Upload data", accept_multiple_files=True, type="csv"
+)
+for uploaded_file in uploaded_files:
+    df = pd.read_csv(uploaded_file)
+    st.write(df)
     
     if uploaded_file is not None:
         try:
